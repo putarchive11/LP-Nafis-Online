@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nafis Online — Belanja COD, Bayar di Tempat</title>
+  <meta name="description" content="Belanja mudah di Nafis Online. Bayar di tempat (COD) via JNE, pesan langsung lewat WhatsApp.">
+  <link rel="icon" href="assets/img/favicon.png" type="image/png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css?v=26">
+  <link rel="stylesheet" href="assets/css/elegan.css?v=2">
+  <script src="assets/js/config.js?v=25"></script>
+</head>
+<body>
+
+  <!-- BAR PROMO -->
+  <div class="promo-bar hidden" id="promoBar"></div>
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="container header-inner">
+      <a href="#" class="brand">
+        <span class="brand-text" style="font-weight:800;font-size:1.25rem;letter-spacing:-.01em">Nafis Online</span>
+      </a>
+      <button class="cart-btn" id="openCart" aria-label="Buka keranjang">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/></svg>
+        <span>Keranjang</span>
+        <span class="badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg" data-gradient-wave data-colors="#FBF8F2,#FFFFFF,#EADBBE,#FBF8F2" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <a href="#promo" class="hero-eyebrow hero-eyebrow-link">Bebas Khawatir, Aman Sampai Rumah
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8l4 4-4 4"/><path d="M2 12h20"/></svg></a>
+      <h1 class="hero-title">
+        <span class="ht-static">Belanja Mudah</span>
+        <span class="ht-rotator" id="heroRotator" aria-hidden="true">&nbsp;
+          <span class="ht-word is-active">Bayar Saat Pesanan Tiba</span>
+          <span class="ht-word">Garansi Original Produk</span>
+        </span>
+        <span class="sr-only">Bayar Saat Pesanan Tiba. Garansi Original Produk.</span>
+      </h1>
+      <p class="hero-lead">Langkah praktis belanja herbal, Pilih Produknya -> Isi alamat lengkap -> Kirim ke WA. Pesanan kami kirim via JNE & bayar saat pesanan sampai. Yuk dipesan!</p>
+      <div class="hero-actions">
+        <a class="btn btn-outline btn-lg" id="heroWa" target="_blank" rel="noopener">Chat Admin
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/><path d="M14.05 2a9 9 0 0 1 8 7.94"/><path d="M14.05 6A5 5 0 0 1 18 10"/></svg></a>
+        <a href="#produk" class="btn btn-primary btn-lg">Lihat Produk
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 8l4 4-4 4"/><path d="M2 12h20"/></svg></a>
+      </div>
+      <ul class="trust" aria-label="Keunggulan belanja di Nafis Online">
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l3 6.5 7 .9-5.1 4.8 1.3 7L12 17.8 5.8 21.2l1.3-7L2 9.4l7-.9z"/></svg><span>100% Original</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20M6 15h4"/></svg><span>Bayar di Tempat</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M1 4h14v12H1zM15 9h4l3 3v4h-7z"/><circle cx="5.5" cy="18.5" r="2"/><circle cx="18.5" cy="18.5" r="2"/></svg><span>Dikirim JNE</span></li>
+        <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 12a8.5 8.5 0 0 1-12.6 7.4L3 21l1.6-5.2A8.5 8.5 0 1 1 21 12z"/></svg><span>Konsultasi via WA</span></li>
+      </ul>
+      <div class="hero-slider" id="heroSlider" aria-roledescription="carousel" aria-label="Info produk Nafis Online">
+        <div class="hs-track" id="hsTrack">
+          <figure class="hs-slide" aria-roledescription="slide" aria-label="1 dari 2">
+            <img src="assets/img/hero/slide-alasan-hanifah.webp"
+                 srcset="assets/img/hero/slide-alasan-hanifah-sm.webp 640w, assets/img/hero/slide-alasan-hanifah.webp 1000w"
+                 sizes="(max-width: 640px) 92vw, 440px" width="1000" height="1400" fetchpriority="high"
+                 alt="Alasan tepat memilih Hanifah Herbal: diformulasikan dari herbal berkualitas tinggi, produk legal, teruji dan sesuai standar, pendamping gaya hidup sehat, pelayanan ramah dan terpercaya. Tampak Sari Kurma Propolis, Madu Lambung Hanifah, Gamat Gen, dan YaconCaps.">
+          </figure>
+          <figure class="hs-slide" aria-roledescription="slide" aria-label="2 dari 2">
+            <img src="assets/img/hero/slide-best-seller-habasyi.webp"
+                 srcset="assets/img/hero/slide-best-seller-habasyi-sm.webp 640w, assets/img/hero/slide-best-seller-habasyi.webp 1000w"
+                 sizes="(max-width: 640px) 92vw, 440px" width="1000" height="1400" loading="lazy"
+                 alt="Best seller: Kapsul Habbatussauda' Oil Habasyi isi 200 kapsul. Habasyi murni, menjaga stamina, antioksidan alami.">
+          </figure>
+        </div>
+        <div class="hs-dots" id="hsDots"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROMO -->
+  <section class="section section-promo" id="promo">
+    <div class="container">
+      <p class="eyebrow">Penawaran Istimewa</p>
+      <h2 class="section-title">Promo Spesial</h2>
+      <div class="promo-grid" id="promoGrid"></div>
+    </div>
+  </section>
+
+  <!-- CARA PESAN -->
+  <section class="section" id="cara-pesan">
+    <div class="container">
+      <p class="eyebrow">Mudah &amp; Aman</p>
+      <h2 class="section-title">Cara Pesan</h2>
+      <div class="steps">
+        <div class="step"><b>1</b><h3>Pilih Produk</h3><p>Masukkan produk ke keranjang.</p></div>
+        <div class="step"><b>2</b><h3>Isi Alamat</h3><p>Nama, nomor WA, dan alamat lengkap.</p></div>
+        <div class="step"><b>3</b><h3>Kirim ke WA</h3><p>Admin membalas total harga + ongkir JNE.</p></div>
+        <div class="step"><b>4</b><h3>Balas "SETUJU"</h3><p>Paket dikirim, bayar saat barang tiba.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRODUK -->
+  <section class="section section-alt" id="produk">
+    <div class="container">
+      <p class="eyebrow">Koleksi Herbal Pilihan</p>
+      <h2 class="section-title">Produk Kami</h2>
+
+      <!-- Produk unggulan -->
+      <div class="featured hidden" id="featured">
+        <div class="featured-head">
+          <h3>Terlaris</h3>
+          <div class="featured-nav">
+            <button class="icon-btn" id="featPrev" aria-label="Sebelumnya">‹</button>
+            <button class="icon-btn" id="featNext" aria-label="Berikutnya">›</button>
+          </div>
+        </div>
+        <div class="featured-track" id="featuredTrack"></div>
+        <div class="featured-dots" id="featuredDots"></div>
+      </div>
+
+      <h3 class="sub-title">Semua Produk</h3>
+      <div class="toolbar">
+        <input type="search" id="search" class="input" placeholder="Cari produk…" autocomplete="off">
+      </div>
+      <div class="chips" id="categories"></div>
+      <p class="result-info" id="resultInfo"></p>
+      <div class="grid" id="productGrid">
+        <p class="muted center">Memuat produk…</p>
+      </div>
+      <div class="load-wrap hidden" id="loadWrap">
+        <p class="load-info" id="loadInfo"></p>
+        <div class="load-btns">
+          <button class="btn btn-ghost load-more" id="loadMore">Muat 12 lagi</button>
+          <button class="btn btn-primary" id="showAll">Tampilkan semua</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="section" id="faq">
+    <div class="container narrow">
+      <p class="eyebrow">Bantuan</p>
+      <h2 class="section-title">Pertanyaan Umum</h2>
+      <details class="faq"><summary>Berapa ongkos kirimnya?</summary><p>Ongkir JNE dihitung admin sesuai alamat Anda, lalu dikirim lewat WhatsApp bersama total pembayaran sebelum paket dikirim.</p></details>
+      <details class="faq"><summary>Bagaimana syarat promonya?</summary><p>Gratis ongkir berlaku untuk alamat Jakarta, Bogor, Depok, Tangerang, dan Bekasi dengan belanja minimal Rp200.000. Diskon 50% berlaku untuk belanja minimal Rp1.000.000, dihitung dari total harga barang dengan potongan maksimal Rp50.000. Kedua promo bisa didapat bersamaan.</p></details>
+      <details class="faq"><summary>Kapan saya membayar?</summary><p>Saat paket tiba. Pembayaran (harga barang + ongkir) diserahkan langsung ke kurir JNE.</p></details>
+      <details class="faq"><summary>Bagaimana jika barang rusak atau salah kirim?</summary><p>Silakan hubungi admin via WhatsApp untuk konsultasi penukaran atau pengembalian.</p></details>
+      <details class="faq"><summary>Apakah pesanan langsung diproses?</summary><p>Pesanan diproses setelah Anda membalas "SETUJU" atas rincian total yang dikirim admin.</p></details>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <p><b data-store-name>Nafis Online</b> · nafisonline.my.id</p>
+      <p class="muted">Pembayaran COD · Pengiriman JNE</p>
+      <a class="btn btn-wa" id="footerWa" target="_blank" rel="noopener">Chat Admin WhatsApp</a>
+    </div>
+  </footer>
+
+  <!-- TOMBOL WA MENGAMBANG -->
+  <a class="wa-float" id="floatWa" target="_blank" rel="noopener" aria-label="Chat WhatsApp">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>
+  </a>
+
+  <!-- KERANJANG (DRAWER) -->
+  <div class="overlay" id="overlay"></div>
+  <aside class="drawer" id="drawer" aria-hidden="true">
+    <div class="drawer-head">
+      <h2 id="drawerTitle">Keranjang</h2>
+      <button class="icon-btn" id="closeCart" aria-label="Tutup">✕</button>
+    </div>
+
+    <!-- Langkah 1: daftar item -->
+    <div class="drawer-body" id="stepCart">
+      <div id="cartItems"></div>
+      <div class="cart-summary">
+        <p class="promo-hint hidden" id="promoHint"></p>
+        <div class="promo-progress hidden" id="promoProgress"><span></span></div>
+        <div class="row"><span>Subtotal</span><span id="cartSubtotal">Rp 0</span></div>
+        <div class="row discount hidden" id="cartDiscountRow"><span id="cartDiscountLabel">Diskon</span><span id="cartDiscount">−Rp 0</span></div>
+        <div class="row muted"><span>Ongkir JNE</span><span id="cartShip">Dikonfirmasi admin</span></div>
+        <div class="row total"><span>Total barang</span><b id="cartTotal">Rp 0</b></div>
+        <button class="btn btn-primary btn-block" id="toCheckout">Lanjut Isi Alamat</button>
+      </div>
+    </div>
+
+    <!-- Langkah 2: form alamat -->
+    <form class="drawer-body hidden" id="stepCheckout" novalidate>
+      <label>Nama Lengkap *<input class="input" name="nama" required></label>
+      <label>No. WhatsApp *<input class="input" name="wa" type="tel" inputmode="tel" placeholder="08xxxxxxxxxx" required></label>
+      <label>Alamat Lengkap *<textarea class="input" name="alamat" rows="3" placeholder="Jalan, nomor rumah, RT/RW, kelurahan/desa" required></textarea></label>
+      <div class="two">
+        <label>Kecamatan *<input class="input" name="kecamatan" required></label>
+        <label>Kota/Kab. *<input class="input" name="kota" required></label>
+      </div>
+      <p class="ship-status hidden" id="shipStatus"></p>
+      <label>Kode Pos *<input class="input" name="kodepos" inputmode="numeric" maxlength="5" required></label>
+      <label>Catatan (opsional)<textarea class="input" name="catatan" rows="2"></textarea></label>
+      <p class="note">Pembayaran <b>COD</b>. Admin akan membalas rincian total (barang + ongkir JNE). Pesanan diproses setelah Anda membalas <b>SETUJU</b>.</p>
+      <p class="error hidden" id="formError"></p>
+      <button type="submit" class="btn btn-wa btn-block">Kirim Pesanan ke WhatsApp</button>
+      <button type="button" class="btn btn-ghost btn-block" id="backToCart">← Kembali ke Keranjang</button>
+    </form>
+
+    <!-- Langkah 3: terima kasih -->
+    <div class="drawer-body hidden center" id="stepDone">
+      <div class="done-icon">✓</div>
+      <h3>Pesanan terkirim ke WhatsApp</h3>
+      <p class="muted">Jika WhatsApp tidak terbuka otomatis, tekan tombol di bawah.</p>
+      <a class="btn btn-wa btn-block" id="retryWa" target="_blank" rel="noopener">Buka WhatsApp</a>
+      <button class="btn btn-ghost btn-block" id="doneClose">Tutup</button>
+    </div>
+  </aside>
+
+  <!-- POP-UP DETAIL PRODUK -->
+  <div class="pm" id="pm" aria-hidden="true">
+    <div class="pm-backdrop" data-pm-close></div>
+    <div class="pm-panel" role="dialog" aria-modal="true" aria-labelledby="pmName">
+      <button class="pm-close" id="pmClose" data-pm-close aria-label="Tutup">✕</button>
+      <div class="pm-media" id="pmMedia">
+        <span class="ph" id="pmPh"></span>
+        <img id="pmImg" alt="">
+        <span class="pm-hint" id="pmHint">Ketuk foto untuk memperbesar</span>
+      </div>
+      <div class="pm-info">
+        <span class="card-cat" id="pmCat"></span>
+        <h2 class="pm-name" id="pmName"></h2>
+        <div id="pmPrice"></div>
+        <p class="pm-desc" id="pmDesc"></p>
+        <div class="card-action pm-action" id="pmAction"></div>
+        <a class="pm-ask" id="pmAsk" target="_blank" rel="noopener">Tanya produk ini via WhatsApp</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="assets/js/app.js?v=26"></script>
+  <script src="assets/js/gradient-wave.js?v=25" defer></script>
+</body>
+</html>
