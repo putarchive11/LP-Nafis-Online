@@ -12,10 +12,12 @@
   --display:#1C2742; --ink:#1C2742; --text:#3A4152; --muted:#6B6460;
   --line:var(--line-warm); --line-strong:#DCC8B6;
   --bg:var(--blush); --bg-alt:#FFFFFF; --bg-sub:var(--blush-2);
-  --serif:"Fraunces",Georgia,"Times New Roman",serif;
+  --serif:"Cormorant Garamond","Cormorant",Georgia,serif;
+  --sans:"Jost",system-ui,sans-serif;
+  --sage:#6F8F6A; --sage-soft:#EEF2EA;
   --ring:0 0 0 3px rgba(232,96,42,.28);
 }
-body{background:var(--blush);color:var(--text);font-family:Inter,system-ui,sans-serif}
+body{background:var(--blush);color:var(--text);font-family:var(--sans);font-size:16.5px}
 ::selection{background:var(--gold-soft);color:var(--navy)}
 
 /* tombol */
@@ -42,9 +44,9 @@ body{background:var(--blush);color:var(--text);font-family:Inter,system-ui,sans-
 /* teks umum */
 .y-kicker{margin:0 0 10px;font-size:12px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--orange-ink)}
 .y-kicker.center,.center .y-kicker{text-align:center}
-.y-h1{margin:0;font-family:var(--serif);font-weight:500;font-size:clamp(40px,6.4vw,72px);line-height:1.02;letter-spacing:-.02em;color:var(--navy);text-wrap:balance}
-.y-h1 em,.y-h2 em{font-style:italic;color:var(--orange-ink)}
-.y-h2{margin:0 0 14px;font-family:var(--serif);font-weight:500;font-size:clamp(30px,4.2vw,46px);line-height:1.08;letter-spacing:-.015em;color:var(--navy);text-wrap:balance}
+.y-h1{margin:0;font-family:var(--serif);font-weight:600;font-size:clamp(46px,7.2vw,86px);line-height:.98;letter-spacing:-.01em;color:var(--navy);text-wrap:balance}
+.y-h1 em,.y-h2 em{font-style:italic;font-weight:500;color:var(--orange-ink)}
+.y-h2{margin:0 0 14px;font-family:var(--serif);font-weight:600;font-size:clamp(36px,5vw,56px);line-height:1.04;letter-spacing:-.005em;color:var(--navy);text-wrap:balance}
 .y-h2.center{text-align:center}
 .y-sub,.y-body{font-size:17px;line-height:1.65;color:var(--text);margin:0 0 14px;text-wrap:pretty}
 .y-head{margin-bottom:36px}
@@ -85,12 +87,12 @@ body{background:var(--blush);color:var(--text);font-family:Inter,system-ui,sans-
 
 /* produk */
 .y-products{background:var(--blush)}
-.y-products .sub-title{font-family:var(--serif);font-weight:500;font-size:26px;color:var(--navy)}
+.y-products .sub-title{font-family:var(--serif);font-weight:600;font-size:32px;color:var(--navy)}
 .y-products .card{border-radius:20px;border:1px solid var(--line);background:#fff;box-shadow:none;overflow:hidden}
 .y-products .card:hover{box-shadow:0 18px 40px -24px rgba(28,39,66,.35)}
 .y-products .card-img{background:#fff}
 .y-products .card-cat{color:var(--orange-ink);letter-spacing:.14em}
-.y-products .card-name{font-family:var(--serif);font-weight:500;font-size:19px;color:var(--navy)}
+.y-products .card-name{font-family:var(--serif);font-weight:600;font-size:22px;line-height:1.15;color:var(--navy)}
 .y-products .price-now,.y-products .card-price{color:var(--navy)}
 .y-products .price-off{background:var(--gold-soft);color:var(--orange-ink)}
 .y-products .chips button{border-radius:999px}
@@ -143,3 +145,39 @@ body{background:var(--blush);color:var(--text);font-family:Inter,system-ui,sans-
 /* bar promo atas */
 .promo-bar{background:var(--navy)}
 .promo-bar i{color:#F7A27B}
+
+/* ===== Ornamen herbal ===== */
+.y-kicker{display:inline-flex;align-items:center;gap:8px}
+.y-kicker::before{content:"";width:18px;height:18px;background:url(../img/herbal/leaf.svg) center/contain no-repeat;flex:none}
+.y-kicker.center{display:flex;justify-content:center}
+.y-head.center .y-kicker,.center>.y-kicker{justify-content:center;display:flex}
+.y-faq .faq summary{font-family:var(--serif);font-weight:600;font-size:22px}
+.y-qa h3,.y-step-list h3{font-family:var(--serif);font-weight:600;font-size:24px}
+.y-lead,.y-sub,.y-body{font-weight:400}
+.y-trust li{font-weight:500}
+.y-deco{position:absolute;pointer-events:none;user-select:none}
+.y-hero{position:relative;overflow:hidden}
+.y-hero .container{position:relative;z-index:1}
+.y-deco-hero-l{left:-40px;top:20px;width:170px;opacity:.55;transform:rotate(-12deg)}
+.y-deco-hero-n{right:6%;top:40px;width:84px;opacity:.8}
+.y-arch .y-deco-olive{left:-18%;bottom:-8%;width:62%;transform:rotate(-8deg);z-index:2}
+.y-arch .y-deco-sprig{right:-12%;top:28%;width:22%;transform:rotate(14deg);opacity:.9}
+.y-divider{display:block;width:180px;height:auto;margin:0 auto 14px;opacity:.9}
+.y-why .y-split>div,.y-about .y-split>div{position:relative}
+.y-photo-wrap{position:relative;justify-self:center;width:100%;max-width:460px}
+.y-photo-wrap .y-photo{max-width:none}
+.y-photo-wrap .y-deco{right:-30px;bottom:-26px;width:150px;transform:rotate(-30deg)}
+.y-logo-panel{position:relative;overflow:visible}
+.y-logo-panel .y-deco{left:-36px;top:-30px;width:110px;transform:rotate(-20deg)}
+.y-step-list li{position:relative;overflow:hidden}
+.y-step-list li::after{content:"";position:absolute;right:-14px;bottom:-14px;width:72px;height:72px;background:url(../img/herbal/nigella.svg) center/contain no-repeat;opacity:.45}
+.y-cta-box{position:relative;overflow:hidden}
+.y-cta-box>*{position:relative;z-index:1}
+.y-cta-box .y-deco{z-index:0;opacity:.28;filter:brightness(2.2) saturate(.6)}
+.y-cta-box .y-deco-l{left:-30px;bottom:-20px;width:240px}
+.y-cta-box .y-deco-r{right:-30px;top:-10px;width:200px;transform:scaleX(-1) rotate(10deg)}
+.y-foot-olive{display:block;width:200px;margin:0 0 6px -8px;opacity:.85}
+@media (max-width:600px){.y-deco-hero-l{width:110px;left:-50px;top:0;opacity:.4}.y-deco-hero-n{width:56px;top:14px;right:4%}.y-photo-wrap .y-deco{width:110px;right:-10px}.y-logo-panel .y-deco{left:-10px;width:80px}}
+@media (max-width:600px){.y-arch .y-deco-sprig{right:-2%;width:18%}.y-arch .y-deco-olive{left:-6%}}
+main#isi{overflow-x:clip}
+.y-cta-box>.y-deco{position:absolute}
