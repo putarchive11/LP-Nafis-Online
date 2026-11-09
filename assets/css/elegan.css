@@ -133,3 +133,13 @@ body{background:var(--ivory)}
 .card-feat .card-flag{display:none}
 .card-feat .card-cat{display:inline-flex;flex-wrap:wrap;align-items:center;gap:4px 8px;white-space:nowrap}
 .card-feat .card-cat::before{content:"★ Terlaris";background:linear-gradient(135deg,#C9A660,#A27C38);color:#fff;font-size:10px;letter-spacing:.08em;padding:3px 9px;border-radius:9999px;white-space:nowrap;flex-shrink:0}
+
+/* Kenapa beli di sini (Nafis Online) */
+.why-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;margin-top:8px}
+.why-card{background:#fff;border:1px solid rgba(15,42,71,.12);border-radius:16px;padding:24px;text-align:left}
+.why-card h3{font-size:19px;font-weight:700;margin:14px 0 6px;color:var(--brand)}
+.why-card p{color:var(--muted);font-size:15px;line-height:1.6}
+.why-hl{border:2px solid var(--gold,#B8913A);box-shadow:0 10px 30px -14px rgba(15,42,71,.35)}
+.why-ic{display:grid;place-items:center;width:48px;height:48px;border-radius:12px;background:var(--brand-soft,#E8EEF5);color:var(--brand)}
+.why-ic svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.why-cta{text-align:center;margin-top:28px}
