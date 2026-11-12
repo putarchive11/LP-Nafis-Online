@@ -211,3 +211,18 @@ main#isi{overflow-x:clip}
 #shipMethod .ship-opt{display:flex;flex-direction:row;align-items:flex-start;gap:12px;margin:0}
 #shipMethod .ship-opt input{margin:2px 0 0;padding:0}
 #shipMethod .ship-opt span{flex:1;min-width:0}
+
+/* ===== Hero: kirim instan & alamat ===== */
+.y-instant{display:flex;gap:14px;align-items:flex-start;margin-top:24px;padding:14px 16px;border-radius:18px;background:#fff;border:1px solid var(--line);box-shadow:0 12px 30px -22px rgba(28,39,66,.45);max-width:520px}
+.y-instant-ic{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--orange);flex:none}
+.y-instant-ic svg{width:22px;height:22px;fill:#fff}
+.y-instant-text{display:flex;flex-direction:column;gap:6px;min-width:0}
+.y-instant-title{margin:0;font-size:15px;color:var(--navy)}
+.y-instant-title b{color:var(--orange-ink)}
+.y-instant-pills{margin:0;display:flex;flex-wrap:wrap;gap:6px}
+.y-instant-pills .pill{display:inline-block;padding:4px 10px;border-radius:999px;background:#E9F5EC;color:#1E6B39;font-size:12.5px;font-weight:600}
+.y-instant-sub{margin:0;font-size:13px;color:var(--muted)}
+.y-address{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-style:normal;font-size:14px;line-height:1.55;color:var(--text);max-width:520px}
+.y-address svg{width:20px;height:20px;flex:none;margin-top:1px;fill:none;stroke:var(--orange-ink);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.y-address b{color:var(--navy)}
+.y-address a{color:var(--navy);font-weight:600;text-decoration:underline;text-underline-offset:3px}
