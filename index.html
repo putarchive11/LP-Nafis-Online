@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@400;500;600&family=Montserrat:wght@500;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css?v=26">
   <link rel="stylesheet" href="assets/css/elegan.css?v=3">
-  <link rel="stylesheet" href="assets/css/yuko.css?v=4">
-  <script src="assets/js/config.js?v=25"></script>
+  <link rel="stylesheet" href="assets/css/yuko.css?v=5">
+  <script src="assets/js/config.js?v=26"></script>
 </head>
 <body>
 
@@ -73,6 +73,21 @@
           <img class="y-deco y-deco-sprig" src="assets/img/herbal/sprig.svg" alt="">
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- FLASH SALE -->
+  <section class="section y-products y-flash hidden" id="flashSale" aria-labelledby="fsTitle">
+    <div class="container">
+      <div class="y-flash-head">
+        <div>
+          <p class="y-kicker">Penawaran terbatas</p>
+          <h2 class="y-h2" id="fsTitle">Flash Sale</h2>
+          <p class="y-sub" id="fsUntil"></p>
+        </div>
+        <div class="fs-countdown" role="timer" aria-live="off" aria-label="Sisa waktu flash sale" id="fsCountdown"></div>
+      </div>
+      <div class="grid" id="flashGrid"></div>
     </div>
   </section>
 
@@ -314,6 +329,6 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="assets/js/app.js?v=26"></script>
+  <script src="assets/js/app.js?v=27"></script>
   </body>
 </html>

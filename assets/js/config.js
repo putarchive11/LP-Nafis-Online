@@ -31,6 +31,19 @@ window.STORE_CONFIG = {
       // kata kunci kota/kabupaten yang dapat gratis ongkir
       areas: ["jakarta", "bogor", "depok", "tangerang", "bekasi"]
     },
+    // FLASH SALE — harga khusus per kode produk, otomatis aktif & berakhir sesuai tanggal (WIB)
+    flashSale: {
+      active: true,
+      title: "Flash Sale",
+      start: "2026-11-12T00:00:00+07:00",   // mulai
+      end: "2026-12-12T23:59:59+07:00",     // berakhir
+      items: {
+        "HNF-12": 20000,    // Teh Celup Rimpang Hanifah 20 sachet
+        "NFS-180": 20000,   // Teh Rimpang ala JSR Hanifah
+        "HNF-15": 75000,    // Durusul Lughah Hard Cover jilid 1-4
+        "DL-SC": 63000      // Durusul Lughah Softcover jilid 1-4 (Attuqa)
+      }
+    },
     discount: {
       active: true,
       minPurchase: 1000000,          // minimal belanja

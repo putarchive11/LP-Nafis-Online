@@ -9,6 +9,17 @@
   var lastWaUrl = "";
 
   /* ---------- Utilitas ---------- */
+  var FL = (C.promos && C.promos.flashSale) || null;
+  function flashLive() {
+    if (!FL || !FL.active || !FL.items) return false;
+    var now = Date.now(), s = Date.parse(FL.start), e = Date.parse(FL.end);
+    return (isNaN(s) || now >= s) && !isNaN(e) && now < e;
+  }
+  function applyFlash(p) {
+    var fp = flashLive() && Number(FL.items[p.kode]);
+    if (fp && fp > 0 && fp < p.harga) { p.flash = true; p.harga_coret = p.harga; p.harga = fp; }
+    return p;
+  }
   function rupiah(n) { return "Rp " + Number(n || 0).toLocaleString("id-ID"); }
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
@@ -68,12 +79,12 @@
             p.harga_coret = Number(String(p.harga_coret || "").replace(/[^\d]/g, "")) || 0;
             if (p.foto && !/^(https?:)?\/\//.test(p.foto) && p.foto.indexOf("/") < 0) p.foto = "assets/img/produk/" + p.foto;
             p.kategori = p.kategori || "Lainnya";
-            return p;
+            return applyFlash(p);
           });
         // bersihkan keranjang dari produk yang sudah tidak ada
         Object.keys(cart).forEach(function (k) { if (!findP(k)) delete cart[k]; });
         saveCart();
-        renderCategories(); renderFeatured(); renderProducts(); renderCart();
+        renderCategories(); renderFlash(); renderFeatured(); renderProducts(); renderCart();
       })
       .catch(function () {
         $("#productGrid").innerHTML = '<p class="muted center">Produk gagal dimuat. Pastikan situs dibuka lewat hosting (bukan klik file langsung) dan link CSV benar.</p>';
@@ -122,7 +133,7 @@
     return '<article class="card' + (extraClass ? " " + extraClass : "") + '">' +
       '<div class="card-img" data-view="' + esc(p.kode) + '" role="button" tabindex="0" aria-label="Lihat detail ' + esc(p.nama) + '">' +
       '<span class="ph">' + esc(initials(p.nama)) + "</span>" + imgHTML(p) +
-      (extraClass ? '<span class="card-flag">Terlaris</span>' : "") + ZOOM_ICON + "</div>" +
+      (p.flash ? '<span class="flash-flag">' + esc(FL.title || "Flash Sale") + "</span>" : (extraClass ? '<span class="card-flag">Terlaris</span>' : "")) + ZOOM_ICON + "</div>" +
       '<div class="card-body">' +
       '<span class="card-cat">' + esc(p.kategori) + "</span>" +
       '<h3 class="card-name">' + esc(p.nama) + "</h3>" +
@@ -201,6 +212,25 @@
   }
 
   /* ---------- Produk unggulan (carousel) ---------- */
+  function renderFlash() {
+    var sec = $("#flashSale"); if (!sec) return;
+    var list = products.filter(function (p) { return p.flash; });
+    if (!list.length) { sec.classList.add("hidden"); return; }
+    $("#flashGrid").innerHTML = list.map(function (p) { return cardHTML(p); }).join("");
+    var end = Date.parse(FL.end), el = $("#fsCountdown");
+    var bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+    var wib = new Date(end + 7 * 3600 * 1000);
+    $("#fsUntil").textContent = "s.d. " + wib.getUTCDate() + " " + bulan[wib.getUTCMonth()] + " " + wib.getUTCFullYear() + " pukul " + ("0" + wib.getUTCHours()).slice(-2) + "." + ("0" + wib.getUTCMinutes()).slice(-2) + " WIB";
+    var pad = function (n) { return ("0" + n).slice(-2); };
+    var tick = function () {
+      var ms = end - Date.now();
+      if (ms <= 0) { clearInterval(renderFlash._t); location.reload(); return; }
+      var s = Math.floor(ms / 1000), d = Math.floor(s / 86400), h = Math.floor(s % 86400 / 3600), m = Math.floor(s % 3600 / 60), sec2 = s % 60;
+      el.innerHTML = '<span><b>' + d + '</b>hari</span><span><b>' + pad(h) + '</b>jam</span><span><b>' + pad(m) + '</b>menit</span><span><b>' + pad(sec2) + '</b>detik</span>';
+    };
+    tick(); clearInterval(renderFlash._t); renderFlash._t = setInterval(tick, 1000);
+    sec.classList.remove("hidden");
+  }
   function isFeatured(p) { return /^(ya|y|1|true)$/i.test(String(p.unggulan || "").trim()); }
   function renderFeatured() {
     var wrap = $("#featured"); if (!wrap) return;
@@ -310,6 +340,7 @@
       var items = cards.map(function (c) {
         return "<span>" + esc(c.title) + " · " + esc(c.term.replace("Min. belanja ", "min. ")) + "</span>";
       }).concat(["<span>Bayar di tempat (COD) · Dikirim JNE</span>"]);
+      if (flashLive()) items.unshift("<span>" + esc(FL.title || "Flash Sale") + " · harga spesial sampai " + (function () { var w = new Date(Date.parse(FL.end) + 7 * 3600 * 1000); return w.getUTCDate() + " " + ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][w.getUTCMonth()]; })() + "</span>");
       var group = "";
       for (var r = 0; r < 3; r++) group += items.map(function (t) { return t + '<i aria-hidden="true">•</i>'; }).join("");
       bar.innerHTML = '<p class="sr-only">' + cards.map(function (c) { return esc(c.title) + ", " + esc(c.term); }).join(". ") + ".</p>" +
@@ -414,7 +445,7 @@
     var i = 1;
     Object.keys(cart).forEach(function (k) {
       var p = findP(k); if (!p) return;
-      lines.push(i++ + ". [" + p.kode + "] " + p.nama + " x" + cart[k] + " = " + rupiah(p.harga * cart[k]));
+      lines.push(i++ + ". [" + p.kode + "] " + p.nama + (p.flash ? " (" + (FL.title || "Flash Sale") + ")" : "") + " x" + cart[k] + " = " + rupiah(p.harga * cart[k]));
     });
     var c = calc(d.kota + " " + d.kecamatan);
     lines.push("", "Subtotal: " + rupiah(c.subtotal));
