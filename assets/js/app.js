@@ -114,7 +114,7 @@
           .map(function (p) {
             p.harga = Number(String(p.harga).replace(/[^\d]/g, "")) || 0;
             p.harga_coret = Number(String(p.harga_coret || "").replace(/[^\d]/g, "")) || 0;
-            if (p.foto && !/^(https?:)?\/\//.test(p.foto) && p.foto.indexOf("/") < 0) p.foto = "assets/img/produk/" + p.foto + "?v=2";
+            if (p.foto && !/^(https?:)?\/\//.test(p.foto) && p.foto.indexOf("/") < 0) p.foto = "assets/img/produk/" + p.foto + "?v=3";
             p.kategori = p.kategori || "Lainnya";
             return applyFlash(p);
           });
