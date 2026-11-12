@@ -1,0 +1,247 @@
+/* =========================================================
+   TEMA "ETALASE HIJAU" — mengikuti home toko Nafis di Shopee
+   Lapisan terakhir di atas style.css + elegan.css + yuko.css
+   Hapus baris <link ... hijau.css> di index.html untuk kembali ke tema sebelumnya
+   ========================================================= */
+:root{
+  --g:#1F6F3F; --g-dark:#14532D; --g-ink:#1B2B21; --g-soft:#EEF5EA; --g-line:#E3EADF; --g-mute:#4D7C5B;
+  --y:#F5C518; --y-ink:#2A2100; --price:#C2410C;
+  --navy:var(--g-dark); --navy-2:var(--g);
+  --orange:var(--y); --orange-ink:var(--g);
+  --gold:var(--g); --gold-2:var(--y); --gold-soft:#FFF7D6;
+  --blush:#F4F7F2; --blush-2:#EAF1E6; --mist:#E6F2E1;
+  --ivory:var(--blush); --ivory-2:var(--blush-2); --line-warm:var(--g-line);
+  --brand:var(--g); --brand-dark:var(--g-dark); --brand-soft:var(--g-soft);
+  --display:var(--g-ink); --ink:var(--g-ink); --text:#34463A; --muted:#5E6F63;
+  --line:var(--g-line); --line-strong:#CFDDCB;
+  --bg:var(--blush); --bg-alt:#fff; --bg-sub:var(--blush-2);
+  --serif:"Poppins",system-ui,sans-serif; --sans:"Poppins",system-ui,sans-serif;
+  --script:"Dancing Script",cursive;
+  --ring:0 0 0 3px rgba(31,111,63,.25);
+}
+.t-hijau{font-family:var(--sans);font-size:15.5px;background:var(--blush);color:var(--text)}
+.t-hijau ::selection{background:#FFF1B8;color:var(--g-dark)}
+
+/* --- huruf judul: Poppins tegas, tanpa miring --- */
+.t-hijau .y-h1,.t-hijau .y-h2,.t-hijau .sub-title,.t-hijau .featured-head h2,.t-hijau .y-qa h3,.t-hijau .y-step-list h3,
+.t-hijau .faq summary,.t-hijau .promo-card h3,.t-hijau .pm-name,.t-hijau .drawer-head h2,.t-hijau .card-name{font-family:var(--sans);letter-spacing:-.01em}
+.t-hijau .y-h2{font-weight:800;font-size:clamp(26px,3.4vw,38px);line-height:1.15;color:var(--g-ink)}
+.t-hijau .y-h2 em{font-style:normal;font-weight:800;color:var(--g)}
+.t-hijau .y-kicker{color:var(--g);letter-spacing:.14em}
+.t-hijau .y-qa h3,.t-hijau .y-step-list h3{font-size:18px;font-weight:700;color:var(--g-ink)}
+.t-hijau .y-faq .faq summary{font-size:16.5px;font-weight:600;color:var(--g-ink)}
+.t-hijau .faq summary::after{color:var(--g)}
+.t-hijau .section{padding:64px 0}
+
+/* --- tombol --- */
+.t-hijau .btn{font-weight:600}
+.t-hijau .btn-primary{background:var(--g);color:#fff;box-shadow:0 8px 18px -10px rgba(20,83,45,.7)}
+.t-hijau .btn-primary:hover{background:var(--g-dark)}
+.t-hijau .btn-outline{border:2px solid var(--g);color:var(--g);background:#fff}
+.t-hijau .btn-outline:hover{background:var(--g);color:#fff}
+
+/* --- bar promo & header --- */
+.t-hijau .promo-bar{background:var(--g-dark);color:#E8F5EC}
+.t-hijau .promo-bar i{color:var(--y)}
+.t-hijau .y-header{background:rgba(255,255,255,.96);border-bottom:1px solid var(--g-line)}
+.t-hijau .y-word{color:var(--g)}
+.t-hijau .y-word span{color:var(--g-dark)}
+.t-hijau .y-tag{color:var(--g-mute)}
+.t-hijau .y-nav a{color:var(--g-ink);font-weight:500;font-size:14.5px}
+.t-hijau .y-nav a:hover{color:var(--g)}
+.t-hijau .cart-btn{background:var(--g);border-color:var(--g);color:#fff;border-radius:999px}
+.t-hijau .cart-btn:hover{background:var(--g-dark);border-color:var(--g-dark);color:#fff}
+.t-hijau .badge{background:var(--y);color:var(--y-ink);font-weight:800}
+.h-search{flex:1;max-width:520px;display:flex;align-items:center;gap:10px;height:44px;padding:0 16px;margin:0 8px;border-radius:999px;background:#F1F5EF;border:1.5px solid #D5E3D2;color:var(--g-mute);transition:border-color .15s,box-shadow .15s}
+.h-search:focus-within{border-color:var(--g);box-shadow:var(--ring);background:#fff}
+.h-search input{flex:1;min-width:0;border:0;background:transparent;font:inherit;font-size:14px;color:var(--g-ink);outline:none}
+.h-search input::placeholder{color:#7D8F82}
+@media (max-width:899px){.h-search{display:none}}
+
+/* --- banner sambutan --- */
+.h-hero{padding:24px 0 8px;background:var(--blush)}
+.h-banner{position:relative;display:grid;grid-template-columns:.9fr 1.1fr;background:#fff;border-radius:28px;overflow:hidden;box-shadow:0 30px 60px -40px rgba(20,83,45,.5)}
+.h-banner-art{position:relative;min-height:470px;background:linear-gradient(160deg,#E6F2E1 0%,#F7FBF4 60%,#FFF7D6 100%);overflow:hidden}
+.h-circle{position:absolute;border-radius:50%;overflow:hidden;border:10px solid #fff;box-shadow:0 20px 40px -20px rgba(0,0,0,.4)}
+.h-circle img{width:100%;height:100%;object-fit:cover}
+.h-circle-a{left:8%;top:72px;width:58%;aspect-ratio:1}
+.h-circle-a img{object-position:center}
+.h-circle-b{right:6%;top:26px;width:40%;aspect-ratio:1}
+.h-thumbs{position:absolute;left:10%;bottom:30px;display:flex;gap:12px;z-index:2}
+.h-thumbs img{width:104px;height:104px;border-radius:22px;object-fit:cover;border:6px solid #fff;background:#fff;box-shadow:0 12px 24px -14px rgba(0,0,0,.4)}
+.h-leaf{position:absolute;right:-24px;bottom:-18px;width:150px;opacity:.55;transform:rotate(-24deg);pointer-events:none}
+.h-banner-copy{padding:44px 48px 40px;display:flex;flex-direction:column;justify-content:center}
+.h-script{margin:0;font-family:var(--script);font-weight:700;font-size:40px;line-height:1;color:var(--g)}
+.h-script-sub{font-size:34px;margin-top:6px}
+.h-title{margin:2px 0 0;font-family:var(--sans);font-weight:900;font-size:clamp(48px,6.6vw,84px);line-height:.98;letter-spacing:-.025em;color:var(--g)}
+.h-lead{margin:18px 0 0;font-size:16px;line-height:1.65;color:var(--text);max-width:540px}
+.h-lead b{color:var(--g-dark)}
+.h-checks{list-style:none;margin:18px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.h-checks li{display:flex;align-items:center;gap:10px;width:fit-content;max-width:100%;padding:7px 18px 7px 7px;border-radius:999px;background:var(--y);color:var(--y-ink);font-weight:600;font-size:14px;line-height:1.35}
+.h-checks span{display:grid;place-items:center;flex:none;width:28px;height:28px;border-radius:50%;background:#fff}
+.h-checks svg{width:16px;height:16px;fill:none;stroke:var(--g);stroke-width:3;stroke-linecap:round;stroke-linejoin:round}
+.h-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.h-info{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.h-info .y-instant,.h-info .y-address{max-width:none;margin:0}
+.h-info .y-address{background:#fff;border:1px solid var(--g-line);border-radius:18px;padding:14px 16px;align-items:center}
+.t-hijau .y-instant{border-color:var(--g-line);box-shadow:none}
+.t-hijau .y-instant-ic{background:var(--y)}
+.t-hijau .y-instant-ic svg{fill:var(--g-dark)}
+.t-hijau .y-instant-title b{color:var(--g)}
+.t-hijau .y-address svg{stroke:var(--g)}
+.t-hijau .y-address b,.t-hijau .y-address a{color:var(--g-dark)}
+@media (max-width:899px){
+  .h-banner{grid-template-columns:1fr}
+  .h-banner-copy{order:-1;padding:30px 22px 26px}
+  .h-banner-art{min-height:330px}
+  .h-circle-a{left:6%;top:30px;width:52%}
+  .h-circle-b{right:6%;top:14px;width:36%}
+  .h-thumbs{left:50%;transform:translateX(-50%);bottom:18px}
+  .h-thumbs img{width:84px;height:84px;border-radius:18px;border-width:5px}
+  .h-info{grid-template-columns:1fr}
+}
+@media (max-width:480px){
+  .h-hero{padding-top:14px}
+  .h-banner{border-radius:20px}
+  .h-script{font-size:30px}.h-script-sub{font-size:26px}
+  .h-title{font-size:48px}
+  .h-checks li{font-size:13px}
+  .h-actions .btn{flex:1 1 auto}
+  .h-banner-art{min-height:270px}
+  .h-thumbs img{width:70px;height:70px}
+}
+
+/* --- ubin kategori --- */
+.h-cats{padding:20px 0 8px;background:var(--blush)}
+.cat-tiles{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:12px}
+.cat-tile{display:flex;flex-direction:column;align-items:center;gap:6px;padding:14px 6px 12px;background:#fff;border:1px solid var(--g-line);border-radius:18px;color:var(--g-ink);text-align:center;transition:border-color .15s,transform .15s,box-shadow .15s}
+.cat-tile:hover{border-color:var(--g);transform:translateY(-2px);box-shadow:0 12px 24px -18px rgba(20,83,45,.6)}
+.cat-tile:focus-visible{outline:none;box-shadow:var(--ring)}
+.cat-img{width:64px;height:64px;border-radius:50%;overflow:hidden;background:var(--g-soft);margin-bottom:2px}
+.cat-img img{width:100%;height:100%;object-fit:cover}
+.cat-tile b{font-size:13px;font-weight:600;line-height:1.25}
+.cat-tile small{font-size:11.5px;color:var(--g-mute)}
+@media (max-width:899px){.cat-tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:480px){.cat-tiles{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none;padding:2px 0 6px}.cat-tiles::-webkit-scrollbar{display:none}.cat-tile{flex:0 0 96px;scroll-snap-align:start}}
+
+/* --- kartu produk (semua bagian) --- */
+.t-hijau .card,.t-hijau .y-products .card{border-radius:16px;border:1px solid var(--g-line);background:#fff;box-shadow:none}
+.t-hijau .card:hover{transform:translateY(-3px);box-shadow:0 14px 30px -18px rgba(20,83,45,.45)}
+.t-hijau .card-img,.t-hijau .y-products .card-img{background:#F7F9F5}
+.t-hijau .card-body{padding:12px 14px 14px;gap:4px}
+.t-hijau .card-cat,.t-hijau .y-products .card-cat{font-size:11px;font-weight:600;letter-spacing:.06em;color:var(--g-mute)}
+.t-hijau .card-name,.t-hijau .y-products .card-name{font-size:14.5px;font-weight:600;line-height:1.35;color:var(--g-ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.t-hijau .card-desc{font-size:13px}
+.t-hijau .card-price,.t-hijau .price-now,.t-hijau .y-products .price-now,.t-hijau .y-products .card-price{color:var(--price);font-size:17px;font-weight:700}
+.t-hijau .price-off,.t-hijau .y-products .price-off{background:#FFF1B8;color:#7A5B00}
+.t-hijau .card .btn-primary{border-radius:10px;box-shadow:none}
+.t-hijau .card-qty{border-color:var(--g);background:var(--g-soft);border-radius:10px}
+.t-hijau .card-qty button{color:var(--g)}
+.t-hijau .card-qty span{color:var(--g-dark)}
+.t-hijau .flash-flag{background:var(--y);color:var(--y-ink);box-shadow:none;letter-spacing:.04em}
+.t-hijau .chip{border-color:var(--line-strong);color:var(--g-ink);background:#fff}
+.t-hijau .chip:hover{border-color:var(--g);color:var(--g)}
+.t-hijau .chip.active{background:var(--g);border-color:var(--g);color:#fff}
+.t-hijau .toolbar .input{border-color:#D5E3D2}
+.t-hijau .load-more{border-color:var(--g);color:var(--g)}
+.t-hijau .grid{grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:16px}
+@media (max-width:640px){.t-hijau .grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.t-hijau .card-body{padding:10px 10px 12px}.t-hijau .card-name{font-size:13.5px}.t-hijau .card-price{font-size:15.5px}}
+
+/* --- flash sale: pita hijau --- */
+.t-hijau .y-products.y-flash{background:var(--g);padding:32px 0 36px;margin-top:28px}
+.t-hijau .y-flash::before{display:none}
+.t-hijau .y-flash-head{align-items:center;margin-bottom:20px}
+.h-flash-title{display:flex;align-items:center;gap:14px}
+.h-bolt{display:grid;place-items:center;flex:none;width:46px;height:46px;border-radius:12px;background:var(--y)}
+.h-bolt svg{width:24px;height:24px;fill:var(--g-dark)}
+.h-flash-title h2{margin:0;font-family:var(--sans);font-size:28px;font-weight:800;letter-spacing:.02em;color:#fff;line-height:1.1}
+.t-hijau .y-flash-head .y-sub{margin:2px 0 0;font-size:13.5px;color:#CFE6D5;font-weight:500}
+.t-hijau .fs-countdown span{min-width:58px;padding:8px 6px;border-radius:10px;background:var(--y);color:#5A4700;font-size:10.5px}
+.t-hijau .fs-countdown b{font-family:var(--sans);font-weight:800;font-size:22px;color:var(--y-ink);margin-bottom:2px}
+.t-hijau .y-flash .card{border:0}
+.t-hijau #flashGrid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+@media (max-width:640px){.t-hijau #flashGrid{grid-template-columns:repeat(2,minmax(0,1fr))}.h-flash-title h2{font-size:22px}.t-hijau .fs-countdown span{min-width:50px}.t-hijau .fs-countdown b{font-size:19px}}
+
+/* --- produk terlaris: kartu tegak + lencana TOP --- */
+.h-top{background:var(--blush);padding:44px 0 8px}
+.h-top .featured{margin-bottom:0}
+.t-hijau .featured-head h2{margin:0;font-size:24px;font-weight:800;color:var(--g-ink);letter-spacing:.01em}
+.t-hijau .featured-nav .icon-btn{border:1px solid var(--g-line);border-radius:999px;color:var(--g);background:#fff}
+.t-hijau .featured-nav .icon-btn:hover:not(:disabled){border-color:var(--g);background:var(--g-soft);color:var(--g)}
+.t-hijau .featured-dots button.on{background:var(--g)!important}
+.t-hijau .featured-track{gap:14px;counter-reset:top}
+.t-hijau .featured-track .card{flex:0 0 calc((100% - 70px)/6)}
+.t-hijau .card-feat{flex-direction:column;align-items:stretch}
+.t-hijau .card-feat .card-img{flex:none;aspect-ratio:1/1;align-self:stretch;width:100%}
+.t-hijau .card-feat .card-body{padding:12px 14px 14px}
+.t-hijau .card-feat .card-name{font-size:14.5px}
+.t-hijau .card-feat .card-desc{display:none}
+.t-hijau .card-feat .card-cat::before{display:none}
+.t-hijau .card-feat .card-img::before{counter-increment:top;content:"TOP";position:absolute;top:0;left:12px;z-index:3;width:38px;height:46px;padding-top:6px;border-radius:0 0 8px 8px;background:var(--g);color:#fff;font-size:10px;font-weight:800;line-height:1;text-align:center;letter-spacing:.06em;box-sizing:border-box}
+.t-hijau .card-feat .card-img::after{content:counter(top);position:absolute;top:18px;left:12px;z-index:4;width:38px;color:var(--y);font-size:20px;font-weight:800;line-height:1;text-align:center}
+.t-hijau .card-feat .flash-flag{left:auto;right:10px}
+@media (max-width:1100px){.t-hijau .featured-track .card{flex-basis:calc((100% - 42px)/4)}}
+@media (max-width:640px){.t-hijau .featured-track .card{flex-basis:44%}.t-hijau .featured-head h2{font-size:19px}}
+
+/* --- promo --- */
+.t-hijau .y-promo{background:var(--blush);padding:48px 0 16px}
+.t-hijau .y-promo .y-divider{display:none}
+.t-hijau .promo-card{background:linear-gradient(135deg,var(--g) 0%,var(--g-dark) 100%);border:0;border-radius:22px}
+.t-hijau .promo-card.alt{background:linear-gradient(135deg,#2E7D4C 0%,#1F6F3F 100%)}
+.t-hijau .promo-card::after{background:radial-gradient(circle,rgba(245,197,24,.28),transparent 70%)}
+.t-hijau .promo-icon{background:rgba(245,197,24,.18);color:var(--y);border-color:rgba(245,197,24,.45)}
+.t-hijau .promo-card h3{font-size:22px;font-weight:800}
+.t-hijau .promo-term{background:var(--y)!important;color:var(--y-ink)!important;border:0}
+
+/* --- jaminan --- */
+.h-trust-sec{background:var(--blush);padding:8px 0 56px}
+.h-trust{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.h-trust>div{background:#fff;border:1px solid var(--g-line);border-radius:18px;padding:18px 20px;border-top:4px solid var(--y)}
+.h-trust b{display:block;font-size:16px;color:var(--g);margin-bottom:2px}
+.h-trust span{font-size:13.5px;color:#4B5B50}
+@media (max-width:899px){.h-trust{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.h-trust{gap:10px}.h-trust>div{padding:14px}}
+
+/* --- bagian lain --- */
+.t-hijau .y-products{background:var(--blush)}
+.t-hijau .y-why,.t-hijau .y-steps{background:#fff}
+.t-hijau .y-about,.t-hijau .y-faq{background:var(--blush)}
+.t-hijau .y-photo,.t-hijau .y-logo-panel{border-radius:24px}
+.t-hijau .y-step-list li{background:var(--g-soft)}
+.t-hijau .y-step-list b{background:var(--g);color:#fff}
+.t-hijau .y-link{color:var(--g)}
+.t-hijau .y-cta{background:var(--blush)}
+.t-hijau .y-cta-box{background:var(--g)}
+.t-hijau .y-cta-box .btn-primary{background:var(--y);color:var(--y-ink);box-shadow:none}
+.t-hijau .y-cta-box .btn-primary:hover{background:#FFD43B}
+.t-hijau .y-footer{background:var(--g-dark);border-top:0;color:#D6EADB}
+.t-hijau .y-foot-grid h3{color:var(--y)}
+.t-hijau .y-foot-grid a:not(.btn){color:#D6EADB}
+.t-hijau .y-foot-grid a:not(.btn):hover{color:#fff}
+.t-hijau .y-foot-brand p,.t-hijau .y-footer .muted{color:#BFD8C6}
+.t-hijau .y-foot-brand b{color:#fff;font-family:var(--sans);font-size:18px}
+.t-hijau .y-foot-brand img{background:#fff;border-radius:50%}
+.t-hijau .y-foot-olive{filter:brightness(1.8) saturate(.5);opacity:.5}
+.t-hijau .y-footer::before{display:none}
+
+/* --- keranjang & pop-up --- */
+.t-hijau .drawer{background:#fff}
+.t-hijau .note{background:var(--g-soft);color:var(--g-dark)}
+.t-hijau .promo-hint{background:#FFF7D6;color:#5A4700}
+.t-hijau .promo-progress span{background:var(--g)}
+.t-hijau .ship-opt input{accent-color:var(--g)}
+.t-hijau .ship-opt:has(input:checked){border-color:var(--g);background:var(--g-soft)}
+.t-hijau .instant-pin span{background:var(--g)}
+.t-hijau .pm-media{background:#F7F9F5}
+.t-hijau .pm-name{font-size:22px;font-weight:700}
+.t-hijau .pm-info .card-price{font-size:24px}
+#terlaris,#catTiles{scroll-margin-top:120px}
+
+/* flash sale: satu baris geser (seperti marketplace) */
+.t-hijau #flashGrid{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;padding:2px 2px 12px;scrollbar-width:thin;scrollbar-color:rgba(245,197,24,.7) transparent}
+.t-hijau #flashGrid .card{flex:0 0 calc((100% - 70px)/6);scroll-snap-align:start}
+@media (max-width:1100px){.t-hijau #flashGrid .card{flex-basis:calc((100% - 42px)/4)}}
+@media (max-width:640px){.t-hijau #flashGrid{margin:0 -16px;padding:2px 16px 12px;gap:10px}.t-hijau #flashGrid .card{flex-basis:44%}}
+
+.t-hijau .y-products .sub-title{font-size:20px;font-weight:700;color:var(--g-ink);margin-top:4px}
+@media (max-width:480px){.h-circle-a{left:5%;top:34px;width:50%}.h-circle-b{right:5%;top:18px;width:38%}.h-thumbs{bottom:14px}}

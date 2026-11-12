@@ -121,7 +121,7 @@
         // bersihkan keranjang dari produk yang sudah tidak ada
         Object.keys(cart).forEach(function (k) { if (!findP(k)) delete cart[k]; });
         saveCart();
-        renderCategories(); renderFlash(); renderFeatured(); renderProducts(); renderCart();
+        renderCategories(); renderCatTiles(); renderFlash(); renderFeatured(); renderProducts(); renderCart();
       })
       .catch(function () {
         $("#productGrid").innerHTML = '<p class="muted center">Produk gagal dimuat. Pastikan situs dibuka lewat hosting (bukan klik file langsung) dan link CSV benar.</p>';
@@ -138,6 +138,22 @@
     products.forEach(function (p) { if (cats.indexOf(p.kategori) < 0) cats.push(p.kategori); });
     $("#categories").innerHTML = cats.map(function (c) {
       return '<button class="chip' + (c === activeCat ? " active" : "") + '" data-cat="' + esc(c) + '">' + esc(c) + "</button>";
+    }).join("");
+  }
+  /* Ubin kategori di bawah banner (foto contoh per kategori, urut jumlah produk) */
+  var CAT_PICK = { "Buku": "HNF-15", "Madu": "HNF-01", "Kapsul Herbal": "HNF-23", "Minuman Herbal": "HNF-12", "Minyak Herbal": "HNF-19", "Kurma": "HNF-22", "Alat Bekam": "HNF-25" };
+  function renderCatTiles() {
+    var el = $("#catTiles"); if (!el) return;
+    var count = {}, img = {};
+    products.forEach(function (p) {
+      count[p.kategori] = (count[p.kategori] || 0) + 1;
+      if (p.foto && (!img[p.kategori] || CAT_PICK[p.kategori] === p.kode)) img[p.kategori] = p.foto;
+    });
+    var cats = Object.keys(count).sort(function (a, b) { return count[b] - count[a]; }).slice(0, 8);
+    el.innerHTML = cats.map(function (c) {
+      return '<button type="button" class="cat-tile" data-cat="' + esc(c) + '">' +
+        '<span class="cat-img">' + (img[c] ? '<img src="' + esc(img[c]) + '" alt="" loading="lazy" onerror="this.remove()">' : "") + "</span>" +
+        "<b>" + esc(c) + "</b><small>" + count[c] + " produk</small></button>";
     }).join("");
   }
   function imgHTML(p) {
@@ -704,10 +720,19 @@
       else if (t.dataset.inc) changeQty(t.dataset.inc, 1);
       else if (t.dataset.dec) changeQty(t.dataset.dec, -1);
       else if (t.dataset.del) { delete cart[t.dataset.del]; saveCart(); renderCart(); }
-      else if (t.dataset.cat) { activeCat = t.dataset.cat; shown = PAGE_SIZE; renderCategories(); renderProducts(); }
+      else if (t.dataset.cat) {
+        activeCat = t.dataset.cat; shown = PAGE_SIZE; renderCategories(); renderProducts();
+        if (t.classList.contains("cat-tile")) $("#produk").scrollIntoView({ behavior: "smooth" });
+      }
       else if (t.dataset.fpage) { var tr = $("#featuredTrack"); tr.scrollTo({ left: Number(t.dataset.fpage) * tr.clientWidth, behavior: "smooth" }); }
     });
-    $("#search").addEventListener("input", function (e) { query = e.target.value; shown = PAGE_SIZE; renderProducts(); });
+    $("#search").addEventListener("input", function (e) { query = e.target.value; shown = PAGE_SIZE; renderProducts(); if ($("#hSearch")) $("#hSearch").value = query; });
+    if ($("#hSearchForm")) {
+      var hs = $("#hSearch"), hsT;
+      var fromHeader = function () { query = hs.value; $("#search").value = query; shown = PAGE_SIZE; renderProducts(); };
+      hs.addEventListener("input", function () { fromHeader(); clearTimeout(hsT); hsT = setTimeout(function () { if (hs.value.trim()) $("#produk").scrollIntoView({ behavior: "smooth" }); }, 700); });
+      $("#hSearchForm").addEventListener("submit", function (e) { e.preventDefault(); clearTimeout(hsT); fromHeader(); $("#produk").scrollIntoView({ behavior: "smooth" }); });
+    }
     $("#loadMore").addEventListener("click", function () { shown += PAGE_SIZE; renderProducts(); });
     $("#showAll").addEventListener("click", function () { shown = Infinity; renderProducts(); });
     $("#featPrev").addEventListener("click", function () { scrollFeatured(-1); });
