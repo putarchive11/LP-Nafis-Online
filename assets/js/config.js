@@ -41,7 +41,10 @@ window.STORE_CONFIG = {
         "HNF-12": 20000,    // Teh Celup Rimpang Hanifah 20 sachet
         "NFS-180": 20000,   // Teh Rimpang ala JSR Hanifah
         "HNF-15": 75000,    // Durusul Lughah Hard Cover jilid 1-4
-        "DL-SC": 63000      // Durusul Lughah Softcover jilid 1-4 (Attuqa)
+        "DL-SC": 63000,     // Durusul Lughah Softcover jilid 1-4 (Attuqa)
+        "HNF-23": 78000,    // Habbatusauda 200 kapsul
+        "HNF-04": 71500,    // Madu Hutan Ar Royyan 1 kg
+        "HNF-19": 105000    // Rafael Salgado 250 ml (harga coret tetap Rp140.000)
       }
     },
     discount: {

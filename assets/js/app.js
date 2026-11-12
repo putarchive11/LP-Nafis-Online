@@ -18,6 +18,7 @@
   function applyFlash(p) {
     var fp = flashLive() && Number(FL.items[p.kode]);
     if (fp && fp > 0 && fp < p.harga) { p.flash = true; p.harga_coret = p.harga; p.harga = fp; }
+    else if (fp && fp > 0 && fp === p.harga && p.harga_coret > fp) { p.flash = true; }
     return p;
   }
   function rupiah(n) { return "Rp " + Number(n || 0).toLocaleString("id-ID"); }
