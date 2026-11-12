@@ -14,7 +14,8 @@ window.STORE_CONFIG = {
   // - atau link Google Sheet: File > Bagikan > Publikasikan ke web > pilih format CSV, tempel link-nya di sini
   productsCsvUrl: "data/products.csv",
 
-  // Meta Pixel ID (kosongkan jika belum ada)
+  // Meta Pixel ID (angka 15–16 digit dari Events Manager > Data sources > Dataset)
+  // Kosong = Pixel tidak dimuat sama sekali.
   metaPixelId: "",
 
   // Warna utama toko (kode hex)

@@ -2,7 +2,7 @@
 
 Landing page marketplace sederhana untuk **nafisonline.my.id**. Pembeli memilih produk, mengisi alamat, lalu pesanan terkirim otomatis ke WhatsApp admin. Pembayaran **COD** via **JNE**, ongkir dikonfirmasi admin.
 
-Tanpa database, tanpa biaya server tambahan (cukup hosting Niagahoster yang sudah ada).
+Tanpa database, tanpa biaya server tambahan.
 
 ## Struktur
 
@@ -86,4 +86,27 @@ Ubah `active: true` menjadi `active: false` untuk mematikan promo. Keranjang, fo
 
 ## Event Meta Pixel
 
-`PageView`, `AddToCart`, `InitiateCheckout`, `Purchase` (saat pesanan dikirim ke WA).
+Isi `metaPixelId` di `assets/js/config.js`. Bila kosong, Pixel tidak dimuat.
+
+| Event | Kapan terkirim | Kegunaan |
+|---|---|---|
+| `PageView` | Halaman dibuka | Audiens pengunjung |
+| `ViewContent` | Detail produk dibuka | Retargeting per produk |
+| `AddToCart` | Produk masuk keranjang | Optimasi awal / retargeting |
+| `InitiateCheckout` | Klik "Lanjut Isi Alamat" | Optimasi fase awal (data masih sedikit) |
+| `Contact` | Klik tombol chat / tanya WA | Ukuran minat |
+| `Lead` + `KirimPesananWA` (kustom) | Klik "Kirim Pesanan ke WhatsApp" | **Event optimasi utama iklan** |
+
+**`Purchase` sengaja tidak dikirim dari website.** Pesanan baru sah setelah pembeli membalas SETUJU dan membayar COD. Pesanan yang benar-benar dibayar diunggah belakangan lewat Events Manager (offline events), agar ROAS di Ads Manager jujur.
+
+Saat pesanan dikirim, Pixel memakai *advanced matching*: nomor WA, nama depan, kota, dan kode pos di-hash SHA-256 di browser. Hal ini dijelaskan di `kebijakan-privasi.html`.
+
+### Sumber pesanan (UTM)
+
+Pasang parameter URL di setiap iklan (Ads Manager → Ad → *URL parameters*):
+
+```
+utm_source=facebook&utm_campaign={{campaign.name}}&utm_content={{ad.name}}
+```
+
+Pesan WA yang masuk ke admin akan berisi baris `Ref: facebook / <campaign> / <iklan>`. Catat baris ini bersama pesanan untuk menghitung biaya per pesanan dan ROAS per iklan.

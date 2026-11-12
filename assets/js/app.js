@@ -40,8 +40,44 @@
   function saveCart() {
     try { localStorage.setItem("hs_cart", JSON.stringify(cart)); } catch (e) {}
   }
-  function track(event, data) {
-    if (window.fbq) { try { window.fbq("track", event, data || {}); } catch (e) {} }
+  /* ---------- Meta Pixel: pelacakan event ----------
+     Event standar: ViewContent, AddToCart, InitiateCheckout, Contact, Lead.
+     Purchase TIDAK dikirim dari website: pembelian baru sah setelah pembeli
+     membalas "SETUJU" dan membayar COD. Purchase diunggah belakangan dari
+     data pesanan (Events Manager > Offline / unggah CSV). */
+  function eventId(prefix) {
+    return prefix + "-" + Date.now().toString(36) + "-" + Math.random().toString(36).slice(2, 8);
+  }
+  function track(event, data, custom) {
+    if (!window.fbq) return;
+    try {
+      window.fbq(custom ? "trackCustom" : "track", event, data || {}, { eventID: eventId(event) });
+    } catch (e) {}
+  }
+  function cartContents() {
+    return Object.keys(cart).map(function (k) {
+      var p = findP(k); return p ? { id: p.kode, quantity: cart[k], item_price: p.harga } : null;
+    }).filter(Boolean);
+  }
+
+  /* ---------- Sumber kunjungan (UTM dari iklan) ----------
+     Disimpan per sesi agar admin tahu pesanan datang dari iklan mana
+     (untuk menghitung biaya per pesanan & ROAS per iklan). */
+  var SRC_KEY = "nf_src";
+  function captureSource() {
+    try {
+      var q = new URLSearchParams(location.search), src = {};
+      ["utm_source", "utm_campaign", "utm_content"].forEach(function (k) { if (q.get(k)) src[k] = q.get(k).slice(0, 60); });
+      if (q.get("fbclid")) src.fb = 1;
+      if (Object.keys(src).length) sessionStorage.setItem(SRC_KEY, JSON.stringify(src));
+    } catch (e) {}
+  }
+  function sourceLabel() {
+    try {
+      var s = JSON.parse(sessionStorage.getItem(SRC_KEY) || "null"); if (!s) return "";
+      var parts = [s.utm_source || (s.fb ? "facebook" : ""), s.utm_campaign, s.utm_content].filter(Boolean);
+      return parts.join(" / ");
+    } catch (e) { return ""; }
   }
 
   /* ---------- Parser CSV sederhana (mendukung tanda kutip) ---------- */
@@ -165,7 +201,7 @@
     $("#pm").classList.add("open"); $("#pm").setAttribute("aria-hidden", "false");
     document.body.classList.add("pm-lock");
     setTimeout(function () { $("#pmClose").focus(); }, 30);
-    track("ViewContent", { content_ids: [p.kode], content_name: p.nama, value: p.harga, currency: "IDR" });
+    track("ViewContent", { content_ids: [p.kode], content_name: p.nama, content_type: "product", value: p.harga, currency: "IDR" });
   }
   function closeProduct() {
     var m = $("#pm"); if (!m.classList.contains("open")) return false;
@@ -372,7 +408,7 @@
     var p = findP(kode); if (!p || !p.harga) return;
     cart[kode] = (cart[kode] || 0) + 1; saveCart(); renderCart();
     toast(p.nama + " masuk keranjang");
-    track("AddToCart", { content_ids: [kode], content_name: p.nama, value: p.harga, currency: "IDR" });
+    track("AddToCart", { content_ids: [kode], content_name: p.nama, content_type: "product", contents: [{ id: kode, quantity: 1, item_price: p.harga }], value: p.harga, currency: "IDR" });
   }
   function changeQty(kode, d) {
     cart[kode] = (cart[kode] || 0) + d;
@@ -457,6 +493,8 @@
     lines.push("Pembayaran: *COD (bayar di tempat)*");
     if (d.catatan) lines.push("", "Catatan: " + d.catatan);
     lines.push("", "Mohon konfirmasi total pembayarannya. Terima kasih.");
+    var ref = sourceLabel();
+    if (ref) lines.push("", "_Ref: " + ref + "_");
     return lines.join("\n");
   }
   function submitOrder(e) {
@@ -473,7 +511,20 @@
     d.wa = normPhone(d.wa);
 
     lastWaUrl = "https://wa.me/" + C.waNumber + "?text=" + encodeURIComponent(buildMessage(d));
-    track("Purchase", { value: calc().total, currency: "IDR", num_items: cartCount() });
+    // Pencocokan lanjutan (advanced matching): Pixel meng-hash data ini (SHA-256) di browser sebelum dikirim.
+    if (window.fbq && C.metaPixelId) {
+      try {
+        window.fbq("init", C.metaPixelId, {
+          ph: d.wa, fn: d.nama.split(/\s+/)[0].toLowerCase(),
+          ct: d.kota.toLowerCase().replace(/^(kota|kab\.?|kabupaten)\s+/, "").replace(/[^a-z]/g, ""),
+          zp: d.kodepos, country: "id"
+        });
+      } catch (err) {}
+    }
+    var orderData = { content_ids: Object.keys(cart), contents: cartContents(), content_type: "product",
+      value: calc(d.kota + " " + d.kecamatan).total, currency: "IDR", num_items: cartCount() };
+    track("Lead", orderData);                 // event optimasi iklan: pesanan terkirim ke WA
+    track("KirimPesananWA", orderData, true); // event kustom, untuk laporan
     window.open(lastWaUrl, "_blank");
 
     $("#retryWa").href = lastWaUrl;
@@ -548,9 +599,12 @@
     if ($("#heroWa")) $("#heroWa").href = waLink;
     initHeroRotator();
     initHeroSlider();
+    captureSource();
     initPixel(C.metaPixelId);
 
     document.addEventListener("click", function (e) {
+      var wa = e.target.closest('a[href^="https://wa.me/"]');
+      if (wa && wa.id !== "retryWa") track("Contact", { content_name: wa.id || "tanya-wa" });
       var v = e.target.closest("[data-view]");
       if (v) { openProduct(v.getAttribute("data-view"), v); return; }
       var t = e.target.closest("[data-add],[data-inc],[data-dec],[data-del],[data-cat],[data-fpage]");
@@ -576,7 +630,7 @@
     $("#doneClose").addEventListener("click", closeDrawer);
     $("#toCheckout").addEventListener("click", function () {
       showStep("#stepCheckout");
-      track("InitiateCheckout", { value: cartTotal(), currency: "IDR", num_items: cartCount() });
+      track("InitiateCheckout", { content_ids: Object.keys(cart), contents: cartContents(), content_type: "product", value: cartTotal(), currency: "IDR", num_items: cartCount() });
     });
     $("#backToCart").addEventListener("click", function () { showStep("#stepCart"); });
     $("#stepCheckout").addEventListener("submit", submitOrder);
