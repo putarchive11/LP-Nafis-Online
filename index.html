@@ -12,8 +12,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;0,700;1,500;1,600&family=Jost:wght@400;500;600&family=Montserrat:wght@500;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="assets/css/style.css?v=26">
   <link rel="stylesheet" href="assets/css/elegan.css?v=3">
-  <link rel="stylesheet" href="assets/css/yuko.css?v=5">
-  <script src="assets/js/config.js?v=28"></script>
+  <link rel="stylesheet" href="assets/css/yuko.css?v=7">
+  <script src="assets/js/config.js?v=29"></script>
 </head>
 <body>
 
@@ -206,6 +206,7 @@
         <details class="faq"><summary>Kenapa harganya lebih murah dari marketplace?</summary><p>Karena Anda membeli langsung ke toko kami, tanpa biaya layanan aplikasi marketplace. Selisih itu kami kembalikan ke Anda dalam bentuk harga yang lebih hemat.</p></details>
         <details class="faq"><summary>Berapa ongkos kirimnya?</summary><p>Ongkir JNE dihitung admin sesuai alamat Anda, lalu dikirim lewat WhatsApp bersama total pembayaran sebelum paket dikirim.</p></details>
         <details class="faq"><summary>Bagaimana syarat promonya?</summary><p>Gratis ongkir berlaku untuk alamat Jakarta, Bogor, Depok, Tangerang, dan Bekasi dengan belanja minimal Rp200.000. Diskon 50% berlaku untuk belanja minimal Rp1.000.000, dihitung dari total harga barang dengan potongan maksimal Rp50.000. Kedua promo bisa didapat bersamaan.</p></details>
+        <details class="faq"><summary>Bisa kirim instan hari itu juga?</summary><p>Bisa, untuk area sekitar Depok dan sekitarnya lewat GoSend atau GrabExpress. Pilih "Kirim Instan" saat checkout dan tandai lokasi Anda di peta. Admin akan mengirim ongkir instan dan cara pembayarannya lewat WhatsApp sebelum driver dipesan.</p></details>
         <details class="faq"><summary>Kapan saya membayar?</summary><p>Saat paket tiba. Pembayaran (harga barang + ongkir) diserahkan langsung ke kurir JNE.</p></details>
         <details class="faq"><summary>Bagaimana jika barang rusak atau salah kirim?</summary><p>Silakan hubungi admin via WhatsApp untuk konsultasi penukaran atau pengembalian.</p></details>
         <details class="faq"><summary>Apakah pesanan langsung diproses?</summary><p>Pesanan diproses setelah Anda membalas "SETUJU" atas rincian total yang dikirim admin.</p></details>
@@ -288,10 +289,21 @@
         <label>Kecamatan *<input class="input" name="kecamatan" required></label>
         <label>Kota/Kab. *<input class="input" name="kota" required></label>
       </div>
+      <fieldset class="ship-method hidden" id="shipMethod">
+        <legend>Metode Pengiriman *</legend>
+        <label class="ship-opt"><input type="radio" name="kirim" value="jne" checked><span><b>JNE Reguler</b><small>Bayar di tempat (COD) · seluruh Indonesia</small></span></label>
+        <label class="ship-opt"><input type="radio" name="kirim" value="instan"><span><b id="instantTitle">Kirim Instan</b><small id="instantSub">GoSend / GrabExpress · langsung diantar driver</small></span></label>
+      </fieldset>
+      <div class="instant-box hidden" id="instantBox">
+        <p class="instant-help">Tandai lokasi pengiriman: ketuk peta atau geser pin ke rumah Anda.</p>
+        <button type="button" class="btn btn-ghost btn-block" id="useMyLoc">Gunakan lokasi saya sekarang</button>
+        <div class="instant-map" id="instantMap" aria-label="Peta untuk memilih lokasi pengiriman"></div>
+        <p class="ship-status" id="instantStatus" aria-live="polite">Belum ada titik lokasi.</p>
+      </div>
       <p class="ship-status hidden" id="shipStatus"></p>
       <label>Kode Pos *<input class="input" name="kodepos" inputmode="numeric" maxlength="5" required></label>
       <label>Catatan (opsional)<textarea class="input" name="catatan" rows="2"></textarea></label>
-      <p class="note">Pembayaran <b>COD</b>. Admin akan membalas rincian total (barang + ongkir JNE). Pesanan diproses setelah Anda membalas <b>SETUJU</b>.</p>
+      <p class="note" id="checkoutNote">Pembayaran <b>COD</b>. Admin akan membalas rincian total (barang + ongkir JNE). Pesanan diproses setelah Anda membalas <b>SETUJU</b>.</p>
       <p class="error hidden" id="formError"></p>
       <button type="submit" class="btn btn-wa btn-block">Kirim Pesanan ke WhatsApp</button>
       <button type="button" class="btn btn-ghost btn-block" id="backToCart">← Kembali ke Keranjang</button>
@@ -330,6 +342,6 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="assets/js/app.js?v=29"></script>
+  <script src="assets/js/app.js?v=30"></script>
   </body>
 </html>

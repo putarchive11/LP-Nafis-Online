@@ -331,6 +331,85 @@
   var FS = PR.freeShipping && PR.freeShipping.active ? PR.freeShipping : null;
   var DC = PR.discount && PR.discount.active ? PR.discount : null;
   function shortRp(n) { return n >= 1000 ? "Rp" + (n / 1000).toLocaleString("id-ID") + "rb" : rupiah(n); }
+  /* ---------- Kirim instan (peta + jarak) ---------- */
+  var ID = C.instantDelivery && C.instantDelivery.active && C.instantDelivery.origin ? C.instantDelivery : null;
+  var inst = { map: null, marker: null, pos: null, km: null, loading: false };
+  function shipMode() { var f = $("#stepCheckout"); var r = f && f.querySelector('input[name="kirim"]:checked'); return ID && r ? r.value : "jne"; }
+  function haversineKm(a, b) {
+    var R = 6371, rad = Math.PI / 180;
+    var dLat = (b.lat - a.lat) * rad, dLng = (b.lng - a.lng) * rad;
+    var h = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+    return 2 * R * Math.asin(Math.sqrt(h));
+  }
+  function loadLeaflet(cb) {
+    if (window.L) return cb();
+    if (inst.loading) return; inst.loading = true;
+    var css = document.createElement("link"); css.rel = "stylesheet";
+    css.href = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"; document.head.appendChild(css);
+    var s = document.createElement("script"); s.src = "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js";
+    s.onload = function () { inst.loading = false; cb(); };
+    s.onerror = function () { inst.loading = false; $("#instantStatus").textContent = "Peta gagal dimuat. Tulis patokan lokasi di kolom catatan, admin akan membantu."; };
+    document.head.appendChild(s);
+  }
+  function setInstantPos(lat, lng, fly) {
+    inst.pos = { lat: lat, lng: lng };
+    inst.km = haversineKm(ID.origin, inst.pos);
+    var icon = L.divIcon({ className: "instant-pin", html: "<span></span>", iconSize: [28, 28], iconAnchor: [14, 28] });
+    if (!inst.marker) {
+      inst.marker = L.marker([lat, lng], { draggable: true, icon: icon, keyboard: true, title: "Lokasi pengiriman" }).addTo(inst.map);
+      inst.marker.on("dragend", function () { var p = inst.marker.getLatLng(); setInstantPos(p.lat, p.lng, false); });
+    } else inst.marker.setLatLng([lat, lng]);
+    if (fly) inst.map.setView([lat, lng], Math.max(inst.map.getZoom(), 16));
+    updateInstantStatus();
+  }
+  function updateInstantStatus() {
+    var box = $("#instantStatus"); if (!box) return;
+    box.classList.remove("ok", "bad");
+    if (!inst.pos) { box.textContent = "Belum ada titik lokasi."; return; }
+    var km = inst.km.toLocaleString("id-ID", { maximumFractionDigits: 1 });
+    if (inst.km > ID.maxKm) { box.classList.add("bad"); box.textContent = "Jarak ±" + km + " km dari toko, di luar jangkauan kirim instan (maks. " + ID.maxKm + " km). Silakan pilih JNE."; }
+    else { box.classList.add("ok"); box.textContent = "✔ Titik tersimpan · ±" + km + " km dari toko. Ongkir instan dikonfirmasi admin."; }
+  }
+  function initInstantMap() {
+    loadLeaflet(function () {
+      if (inst.map) { inst.map.invalidateSize(); return; }
+      inst.map = L.map("instantMap", { zoomControl: true, attributionControl: true }).setView([ID.origin.lat, ID.origin.lng], 13);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OpenStreetMap" }).addTo(inst.map);
+      if (ID.showOrigin) L.circleMarker([ID.origin.lat, ID.origin.lng], { radius: 7, color: "#E8602A", fillOpacity: 0.9 }).addTo(inst.map).bindTooltip("Toko Nafis Online");
+      inst.map.on("click", function (e) { setInstantPos(e.latlng.lat, e.latlng.lng, false); });
+      setTimeout(function () { inst.map.invalidateSize(); }, 200);
+    });
+  }
+  function onShipModeChange() {
+    var instant = shipMode() === "instan";
+    $("#instantBox").classList.toggle("hidden", !instant);
+    var note = $("#checkoutNote");
+    if (instant) {
+      note.innerHTML = "Pengiriman <b>" + esc(ID.title) + "</b> (" + esc(ID.couriers) + "). Admin akan membalas total barang + ongkir instan. Pembayaran: <b>" + esc(ID.payment) + "</b>.";
+      $("#shipStatus").classList.add("hidden");
+      initInstantMap();
+    } else {
+      note.innerHTML = "Pembayaran <b>COD</b>. Admin akan membalas rincian total (barang + ongkir JNE). Pesanan diproses setelah Anda membalas <b>SETUJU</b>.";
+      updateShipStatus();
+    }
+  }
+  function initInstant() {
+    if (!ID) return;
+    $("#shipMethod").classList.remove("hidden");
+    $("#instantTitle").textContent = ID.title;
+    $("#instantSub").textContent = ID.couriers + " · langsung diantar driver";
+    $("#stepCheckout").querySelectorAll('input[name="kirim"]').forEach(function (r) { r.addEventListener("change", onShipModeChange); });
+    $("#useMyLoc").addEventListener("click", function () {
+      var box = $("#instantStatus");
+      if (!navigator.geolocation) { box.textContent = "Perangkat tidak mendukung lokasi. Ketuk peta untuk menandai."; return; }
+      box.textContent = "Mencari lokasi Anda…";
+      navigator.geolocation.getCurrentPosition(function (p) {
+        initInstantMap();
+        var go = function () { if (!inst.map) return setTimeout(go, 150); setInstantPos(p.coords.latitude, p.coords.longitude, true); };
+        go();
+      }, function () { box.textContent = "Izin lokasi ditolak. Ketuk peta untuk menandai lokasi."; }, { enableHighAccuracy: true, timeout: 10000 });
+    });
+  }
   function isFreeArea(text) {
     if (!FS) return false;
     var t = String(text || "").toLowerCase();
@@ -347,7 +426,7 @@
       discount: disc,
       total: sub - disc,
       shipEligible: shipEligible,
-      freeShip: shipEligible && areaText !== undefined && isFreeArea(areaText)
+      freeShip: shipEligible && areaText !== undefined && shipMode() !== "instan" && isFreeArea(areaText)
     };
   }
   function renderPromos() {
@@ -395,6 +474,7 @@
   }
   function updateShipStatus() {
     var box = $("#shipStatus"); if (!box || !FS) return;
+    if (shipMode() === "instan") { box.classList.add("hidden"); return; }
     var f = $("#stepCheckout");
     var area = f.kota.value + " " + f.kecamatan.value;
     var c = calc(area);
@@ -488,9 +568,17 @@
     lines.push("", "Subtotal: " + rupiah(c.subtotal));
     if (c.discount) lines.push("Diskon " + DC.percent + "%" + (DC.maxDiscount > 0 ? " (maks. " + rupiah(DC.maxDiscount) + ")" : "") + ": -" + rupiah(c.discount));
     lines.push("Total barang: *" + rupiah(c.total) + "*");
-    if (c.freeShip) lines.push("Ongkir JNE: *GRATIS* (promo " + FS.title + ")");
-    else lines.push("Ongkir JNE: menunggu konfirmasi admin");
-    lines.push("Pembayaran: *COD (bayar di tempat)*");
+    if (shipMode() === "instan") {
+      lines.push("Pengiriman: *" + ID.title + " (" + ID.couriers + ")*");
+      lines.push("Titik lokasi: https://maps.google.com/?q=" + inst.pos.lat.toFixed(6) + "," + inst.pos.lng.toFixed(6));
+      lines.push("Jarak dari toko: ±" + inst.km.toLocaleString("id-ID", { maximumFractionDigits: 1 }) + " km (garis lurus)");
+      lines.push("Ongkir instan: menunggu konfirmasi admin");
+      lines.push("Pembayaran: *" + ID.payment + "*");
+    } else {
+      if (c.freeShip) lines.push("Ongkir JNE: *GRATIS* (promo " + FS.title + ")");
+      else lines.push("Ongkir JNE: menunggu konfirmasi admin");
+      lines.push("Pembayaran: *COD (bayar di tempat)*");
+    }
     if (d.catatan) lines.push("", "Catatan: " + d.catatan);
     lines.push("", "Mohon konfirmasi total pembayarannya. Terima kasih.");
     var ref = sourceLabel();
@@ -505,6 +593,8 @@
     if (!d.nama || !d.alamat || !d.kecamatan || !d.kota) err = "Mohon lengkapi semua kolom bertanda *.";
     else if (!/^628\d{7,11}$/.test(normPhone(d.wa))) err = "Nomor WhatsApp tidak valid. Contoh: 081234567890";
     else if (!/^\d{5}$/.test(d.kodepos)) err = "Kode pos harus 5 angka.";
+    else if (shipMode() === "instan" && !inst.pos) err = "Tandai lokasi pengiriman di peta untuk Kirim Instan.";
+    else if (shipMode() === "instan" && inst.km > ID.maxKm) err = "Lokasi di luar jangkauan Kirim Instan. Silakan pilih JNE.";
     var box = $("#formError");
     if (err) { box.textContent = err; box.classList.remove("hidden"); return; }
     box.classList.add("hidden");
@@ -529,6 +619,7 @@
 
     $("#retryWa").href = lastWaUrl;
     cart = {}; saveCart(); renderCart(); f.reset();
+    if (ID) { inst.pos = null; inst.km = null; if (inst.marker) { inst.marker.remove(); inst.marker = null; } $("#instantBox").classList.add("hidden"); onShipModeChange(); }
     showStep("#stepDone");
   }
 
@@ -637,6 +728,7 @@
     $("#stepCheckout").kota.addEventListener("input", updateShipStatus);
     $("#stepCheckout").kecamatan.addEventListener("input", updateShipStatus);
     renderPromos();
+    initInstant();
     document.addEventListener("keydown", function (e) {
       if (e.key === "Escape") { if (!closeProduct()) closeDrawer(); return; }
       var v = (e.key === "Enter" || e.key === " ") && e.target.closest && e.target.closest("[data-view]");

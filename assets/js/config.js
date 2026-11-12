@@ -22,6 +22,20 @@ window.STORE_CONFIG = {
   brandColor: "#0F2A47",
 
   // =======================================================
+  // KIRIM INSTAN (GoSend / GrabExpress) — tahap 1: pembeli menandai lokasi di peta,
+  // admin memesan driver secara manual setelah konfirmasi WhatsApp.
+  // =======================================================
+  instantDelivery: {
+    active: true,
+    title: "Kirim Instan",
+    couriers: "GoSend / GrabExpress",
+    origin: { lat: -6.36679, lng: 106.80056 },  // titik jemput: Jl. Fatahillah II No. 66, Tanah Baru, Beji, Depok
+    maxKm: 25,                                    // jarak garis lurus maksimal dari titik jemput
+    showOrigin: false,                            // true = tampilkan titik toko di peta
+    payment: "Transfer/QRIS ke admin sebelum driver dipesan"
+  },
+
+  // =======================================================
   // PROMO — ubah angka di sini, atau set active: false untuk mematikan
   // =======================================================
   promos: {

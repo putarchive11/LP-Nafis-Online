@@ -193,3 +193,21 @@ main#isi{overflow-x:clip}
 .flash-flag{position:absolute;top:10px;left:10px;z-index:2;background:var(--orange);color:#fff;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:999px;box-shadow:0 6px 14px -6px rgba(232,96,42,.7)}
 .card-feat .flash-flag{display:inline-block}
 @media (max-width:480px){.fs-countdown span{min-width:56px}.fs-countdown b{font-size:24px}}
+
+/* ===== Metode pengiriman & kirim instan ===== */
+.ship-method{border:0;margin:4px 0 0;padding:0;display:grid;gap:8px}
+.ship-method legend{font-size:14px;font-weight:600;color:var(--navy);margin-bottom:6px;padding:0}
+.ship-opt{display:flex;gap:12px;align-items:flex-start;border:1.5px solid var(--line);border-radius:14px;padding:12px 14px;cursor:pointer;background:#fff}
+.ship-opt input{margin-top:3px;accent-color:var(--orange);width:18px;height:18px;flex:none}
+.ship-opt span{display:flex;flex-direction:column;gap:2px}
+.ship-opt b{color:var(--navy);font-size:15px}
+.ship-opt small{color:var(--muted);font-size:13px}
+.ship-opt:has(input:checked){border-color:var(--orange);background:#FFF7F2}
+.instant-box{display:grid;gap:10px;margin-top:4px}
+.instant-help{margin:0;font-size:14px;color:var(--text)}
+.instant-map{height:260px;border-radius:14px;border:1px solid var(--line);overflow:hidden;background:var(--blush-2)}
+.instant-pin span{display:block;width:28px;height:28px;border-radius:50% 50% 50% 0;background:var(--orange);transform:rotate(-45deg);border:3px solid #fff;box-shadow:0 4px 10px rgba(28,39,66,.35)}
+#instantStatus.bad{background:#FDE2E2;color:#9B1C1C}
+#shipMethod .ship-opt{display:flex;flex-direction:row;align-items:flex-start;gap:12px;margin:0}
+#shipMethod .ship-opt input{margin:2px 0 0;padding:0}
+#shipMethod .ship-opt span{flex:1;min-width:0}
