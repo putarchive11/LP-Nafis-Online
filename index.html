@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="assets/css/style.css?v=26">
   <link rel="stylesheet" href="assets/css/elegan.css?v=3">
   <link rel="stylesheet" href="assets/css/yuko.css?v=8">
-  <link rel="stylesheet" href="assets/css/hijau.css?v=1">
+  <link rel="stylesheet" href="assets/css/hijau.css?v=2">
   <script src="assets/js/config.js?v=29"></script>
 </head>
 <body class="t-hijau">
@@ -50,33 +50,25 @@
   <!-- HERO: banner sambutan -->
   <section class="h-hero">
     <div class="container">
-      <div class="h-banner">
-        <div class="h-banner-art" aria-hidden="true">
-          <div class="h-circle h-circle-a"><img src="assets/img/hero/rak-herbal.webp" alt="" width="480" height="480"></div>
-          <div class="h-circle h-circle-b"><img src="assets/img/hero/rak-buku.webp" alt="" width="480" height="480"></div>
-          <div class="h-thumbs">
-            <img src="assets/img/produk/habbatusauda-200-kapsul.webp" alt="" width="120" height="120">
-            <img src="assets/img/produk/madu-lambung-hanifah.webp" alt="" width="120" height="120">
-            <img src="assets/img/produk/durusul-lughah-hard-cover.webp" alt="" width="120" height="120">
-          </div>
-          <img class="h-leaf" src="assets/img/herbal/sprig.svg" alt="">
-        </div>
-        <div class="h-banner-copy">
-          <p class="h-script">Selamat Datang di</p>
-          <h1 class="h-title">Nafis Online</h1>
-          <p class="h-script h-script-sub">Sahabat Ilmu dan Kesehatan</p>
-          <p class="h-lead">Buku Islami dan produk herbal pilihan, langsung dari toko resmi. Belanja tanpa biaya layanan marketplace, <b>bayar di tempat (COD)</b> saat paket JNE sampai, dan <b>gratis ongkir se-Jabodetabek</b> mulai Rp200.000.</p>
-          <ul class="h-checks">
-            <li><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></span>Produk original dan terjamin</li>
-            <li><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></span>Harga hemat langsung dari toko</li>
-            <li><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></span>Kirim JNE (COD) atau instan GoSend / GrabExpress</li>
-          </ul>
-          <div class="h-actions">
-            <a href="#produk" class="btn btn-primary btn-lg">Belanja Sekarang</a>
-            <a class="btn btn-outline btn-lg" id="heroWa" target="_blank" rel="noopener">Chat Admin</a>
-          </div>
+      <div class="hb">
+        <span class="hb-glow hb-glow-a" aria-hidden="true"></span>
+        <span class="hb-glow hb-glow-b" aria-hidden="true"></span>
+        <img class="hb-leaf" src="assets/img/herbal/sprig.svg" alt="" aria-hidden="true">
+        <p class="hb-script">Selamat Datang di</p>
+        <h1 class="hb-title">Nafis Online</h1>
+        <p class="hb-script hb-script-sub">Sahabat Ilmu dan Kesehatan</p>
+        <p class="hb-lead">Buku Islami dan produk herbal pilihan, langsung dari toko resmi. <b>Bayar di tempat (COD)</b> saat paket JNE sampai, dan <b>gratis ongkir se-Jabodetabek</b> mulai Rp200.000.</p>
+        <ul class="h-checks hb-checks">
+          <li><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></span>Produk original</li>
+          <li><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></span>Harga hemat langsung dari toko</li>
+          <li><span aria-hidden="true"><svg viewBox="0 0 24 24"><path d="m5 12 5 5 9-10"/></svg></span>COD JNE · Instan GoSend / GrabExpress</li>
+        </ul>
+        <div class="hb-actions">
+          <a href="#produk" class="btn btn-lg hb-btn-main">Belanja Sekarang</a>
+          <a class="btn btn-lg hb-btn-alt" id="heroWa" target="_blank" rel="noopener">Chat Admin</a>
         </div>
       </div>
+      <div class="hb-shelf" id="heroShelf" aria-label="Produk pilihan"></div>
       <div class="h-info">
         <div class="y-instant">
           <span class="y-instant-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M13 2 4 14h7l-1 8 9-12h-7z"/></svg></span>
@@ -384,6 +376,6 @@
 
   <div class="toast" id="toast"></div>
 
-  <script src="assets/js/app.js?v=31"></script>
+  <script src="assets/js/app.js?v=32"></script>
   </body>
 </html>

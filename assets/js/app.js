@@ -121,7 +121,7 @@
         // bersihkan keranjang dari produk yang sudah tidak ada
         Object.keys(cart).forEach(function (k) { if (!findP(k)) delete cart[k]; });
         saveCart();
-        renderCategories(); renderCatTiles(); renderFlash(); renderFeatured(); renderProducts(); renderCart();
+        renderCategories(); renderCatTiles(); renderHeroShelf(); renderFlash(); renderFeatured(); renderProducts(); renderCart();
       })
       .catch(function () {
         $("#productGrid").innerHTML = '<p class="muted center">Produk gagal dimuat. Pastikan situs dibuka lewat hosting (bukan klik file langsung) dan link CSV benar.</p>';
@@ -154,6 +154,18 @@
       return '<button type="button" class="cat-tile" data-cat="' + esc(c) + '">' +
         '<span class="cat-img">' + (img[c] ? '<img src="' + esc(img[c]) + '" alt="" loading="lazy" onerror="this.remove()">' : "") + "</span>" +
         "<b>" + esc(c) + "</b><small>" + count[c] + " produk</small></button>";
+    }).join("");
+  }
+  /* Deretan produk di bawah banner hero (harga ikut data & flash sale) */
+  var HERO_SHELF = ["HNF-04", "HNF-23", "HNF-12", "HNF-15", "HNF-19", "HNF-22"];
+  function renderHeroShelf() {
+    var el = $("#heroShelf"); if (!el) return;
+    el.innerHTML = HERO_SHELF.map(findP).filter(function (p) { return p && p.foto; }).map(function (p) {
+      return '<button type="button" class="hb-item" data-view="' + esc(p.kode) + '" aria-label="Lihat ' + esc(p.nama) + '">' +
+        '<span class="hb-img"><img src="' + esc(p.foto) + '" alt="" loading="lazy" onerror="this.remove()">' +
+        (p.flash ? '<span class="hb-flag">Flash Sale</span>' : "") + "</span>" +
+        '<span class="hb-name">' + esc(p.nama) + "</span>" +
+        '<span class="hb-price">' + (p.harga ? rupiah(p.harga) : "Tanya harga") + "</span></button>";
     }).join("");
   }
   function imgHTML(p) {
