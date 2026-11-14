@@ -32,7 +32,12 @@ window.STORE_CONFIG = {
     origin: { lat: -6.36679, lng: 106.80056 },  // titik jemput: Jl. Fatahillah II No. 66, Tanah Baru, Beji, Depok
     maxKm: 25,                                    // jarak garis lurus maksimal dari titik jemput
     showOrigin: false,                            // true = tampilkan titik toko di peta
-    payment: "Transfer/QRIS ke admin sebelum driver dipesan"
+    payment: "Transfer/QRIS ke admin sebelum driver dipesan",
+    // Ongkir instan otomatis (GoSend & GrabExpress) lewat Biteship.
+    // Nyalakan (true) SETELAH API key Biteship dipasang di Vercel:
+    // Settings → Environment Variables → BITESHIP_API_KEY = <api key dari dashboard Biteship>
+    liveRates: false,
+    ratesUrl: "/api/ongkir-instan"
   },
 
   // =======================================================

@@ -225,6 +225,7 @@
     $("#pmDesc").textContent = p.deskripsi || "";
     $("#pmDesc").hidden = !p.deskripsi;
     var act = $("#pmAction"); act.setAttribute("data-act", p.kode); act.innerHTML = actionHTML(p.kode);
+    $("#pmBuy").hidden = !p.harga; $("#pmBuy").dataset.kode = p.kode;
     $("#pmAsk").href = askWaUrl(p).replace("tanya harga", "tanya tentang");
     $("#pm").classList.add("open"); $("#pm").setAttribute("aria-hidden", "false");
     document.body.classList.add("pm-lock");
@@ -361,7 +362,7 @@
   function shortRp(n) { return n >= 1000 ? "Rp" + (n / 1000).toLocaleString("id-ID") + "rb" : rupiah(n); }
   /* ---------- Kirim instan (peta + jarak) ---------- */
   var ID = C.instantDelivery && C.instantDelivery.active && C.instantDelivery.origin ? C.instantDelivery : null;
-  var inst = { map: null, marker: null, pos: null, km: null, loading: false };
+  var inst = { map: null, marker: null, pos: null, km: null, loading: false, rates: null, rate: null, rateT: null, rateSeq: 0 };
   function shipMode() { var f = $("#stepCheckout"); var r = f && f.querySelector('input[name="kirim"]:checked'); return ID && r ? r.value : "jne"; }
   function haversineKm(a, b) {
     var R = 6371, rad = Math.PI / 180;
@@ -396,7 +397,41 @@
     if (!inst.pos) { box.textContent = "Belum ada titik lokasi."; return; }
     var km = inst.km.toLocaleString("id-ID", { maximumFractionDigits: 1 });
     if (inst.km > ID.maxKm) { box.classList.add("bad"); box.textContent = "Jarak ±" + km + " km dari toko, di luar jangkauan kirim instan (maks. " + ID.maxKm + " km). Silakan pilih JNE."; }
-    else { box.classList.add("ok"); box.textContent = "✔ Titik tersimpan · ±" + km + " km dari toko. Ongkir instan dikonfirmasi admin."; }
+    else { box.classList.add("ok"); box.textContent = "✔ Titik tersimpan · ±" + km + " km dari toko."; }
+    clearTimeout(inst.rateT);
+    inst.rates = null; inst.rate = null; renderRates();
+    if (inst.km <= ID.maxKm) inst.rateT = setTimeout(fetchRates, 500);
+  }
+  /* Ongkir instan langsung dari GoSend/GrabExpress (lewat /api/ongkir-instan + Biteship).
+     Jika belum disambungkan, pembeli tetap bisa pesan; ongkir dikonfirmasi admin. */
+  function fetchRates() {
+    if (!inst.pos || !ID.liveRates) { renderRates(); return; }
+    var seq = ++inst.rateSeq;
+    inst.rates = "loading"; renderRates();
+    fetch(ID.ratesUrl || "/api/ongkir-instan", {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ lat: inst.pos.lat, lng: inst.pos.lng, value: calc().total, qty: cartCount() })
+    }).then(function (r) { return r.json(); }).then(function (j) {
+      if (seq !== inst.rateSeq) return;
+      inst.rates = j && j.ok && j.options && j.options.length ? j.options : "none";
+      if (Array.isArray(inst.rates)) inst.rate = inst.rates[0];
+      renderRates();
+    }).catch(function () { if (seq === inst.rateSeq) { inst.rates = "none"; renderRates(); } });
+  }
+  function renderRates() {
+    var el = $("#rateList"); if (!el) return;
+    if (!inst.pos || inst.km > ID.maxKm || !ID.liveRates) {
+      el.classList.toggle("hidden", !(inst.pos && inst.km <= ID.maxKm));
+      el.innerHTML = '<p class="rate-msg">Ongkir instan akan dikirim admin lewat WhatsApp sebelum driver dipesan.</p>';
+      return;
+    }
+    el.classList.remove("hidden");
+    if (inst.rates === "loading") { el.innerHTML = '<p class="rate-msg">Menghitung ongkir GoSend & GrabExpress…</p>'; return; }
+    if (!Array.isArray(inst.rates)) { el.innerHTML = '<p class="rate-msg">Ongkir otomatis belum tersedia untuk titik ini. Admin akan mengirim ongkirnya lewat WhatsApp.</p>'; return; }
+    el.innerHTML = inst.rates.map(function (r, i) {
+      return '<label class="rate-opt"><input type="radio" name="rate" value="' + i + '"' + (inst.rate === r ? " checked" : "") + '>' +
+        '<span><b>' + esc(r.courier) + " " + esc(r.service) + "</b><small>" + esc(r.eta || "") + "</small></span><em>" + rupiah(r.price) + "</em></label>";
+    }).join("") + '<p class="rate-msg">Total bayar: <b>' + rupiah(calc().total + inst.rate.price) + "</b> (barang + ongkir). Harga dari kurir, bisa berubah sedikit saat driver dipesan.</p>";
   }
   function initInstantMap() {
     loadLeaflet(function () {
@@ -427,6 +462,9 @@
     $("#instantTitle").textContent = ID.title;
     $("#instantSub").textContent = ID.couriers + " · langsung diantar driver";
     $("#stepCheckout").querySelectorAll('input[name="kirim"]').forEach(function (r) { r.addEventListener("change", onShipModeChange); });
+    $("#rateList").addEventListener("change", function (e) {
+      if (e.target.name === "rate" && Array.isArray(inst.rates)) { inst.rate = inst.rates[Number(e.target.value)]; renderRates(); }
+    });
     $("#useMyLoc").addEventListener("click", function () {
       var box = $("#instantStatus");
       if (!navigator.geolocation) { box.textContent = "Perangkat tidak mendukung lokasi. Ketuk peta untuk menandai."; return; }
@@ -503,10 +541,9 @@
   function updateShipStatus() {
     var box = $("#shipStatus"); if (!box || !FS) return;
     if (shipMode() === "instan") { box.classList.add("hidden"); return; }
-    var f = $("#stepCheckout");
-    var area = f.kota.value + " " + f.kecamatan.value;
+    var area = areaText();
     var c = calc(area);
-    if (!f.kota.value.trim()) { box.classList.add("hidden"); return; }
+    if (!area.trim() || (!$("#stepCheckout").kota.value && !isFreeArea(area))) { box.classList.add("hidden"); return; }
     box.classList.remove("hidden", "ok");
     if (c.freeShip) { box.classList.add("ok"); box.textContent = "✔ Alamat Jabodetabek: ongkir GRATIS."; }
     else if (isFreeArea(area)) box.textContent = "Alamat Jabodetabek. Tambah " + rupiah(FS.minPurchase - c.subtotal) + " lagi untuk gratis ongkir.";
@@ -585,14 +622,14 @@
     lines.push("Nama: " + d.nama);
     lines.push("No. WA: " + d.wa);
     lines.push("Alamat: " + d.alamat);
-    lines.push("Kec. " + d.kecamatan + ", " + d.kota + " " + d.kodepos);
+    lines.push(d.kecamatan ? "Kel. " + d.kelurahan + ", Kec. " + d.kecamatan + ", " + d.kota + (d.kodepos ? " " + d.kodepos : "") : "Wilayah: " + d.area);
     lines.push("", "*Pesanan*");
     var i = 1;
     Object.keys(cart).forEach(function (k) {
       var p = findP(k); if (!p) return;
       lines.push(i++ + ". [" + p.kode + "] " + p.nama + (p.flash ? " (" + (FL.title || "Flash Sale") + ")" : "") + " x" + cart[k] + " = " + rupiah(p.harga * cart[k]));
     });
-    var c = calc(d.kota + " " + d.kecamatan);
+    var c = calc(areaText());
     lines.push("", "Subtotal: " + rupiah(c.subtotal));
     if (c.discount) lines.push("Diskon " + DC.percent + "%" + (DC.maxDiscount > 0 ? " (maks. " + rupiah(DC.maxDiscount) + ")" : "") + ": -" + rupiah(c.discount));
     lines.push("Total barang: *" + rupiah(c.total) + "*");
@@ -600,7 +637,11 @@
       lines.push("Pengiriman: *" + ID.title + " (" + ID.couriers + ")*");
       lines.push("Titik lokasi: https://maps.google.com/?q=" + inst.pos.lat.toFixed(6) + "," + inst.pos.lng.toFixed(6));
       lines.push("Jarak dari toko: ±" + inst.km.toLocaleString("id-ID", { maximumFractionDigits: 1 }) + " km (garis lurus)");
-      lines.push("Ongkir instan: menunggu konfirmasi admin");
+      if (inst.rate) {
+        lines.push("Kurir pilihan: *" + inst.rate.courier + " " + inst.rate.service + "*");
+        lines.push("Ongkir instan (cek web): " + rupiah(inst.rate.price));
+        lines.push("Total bayar: *" + rupiah(c.total + inst.rate.price) + "*");
+      } else lines.push("Ongkir instan: menunggu konfirmasi admin");
       lines.push("Pembayaran: *" + ID.payment + "*");
     } else {
       if (c.freeShip) lines.push("Ongkir JNE: *GRATIS* (promo " + FS.title + ")");
@@ -616,16 +657,16 @@
   function submitOrder(e) {
     e.preventDefault();
     var f = e.target, d = {};
-    ["nama", "wa", "alamat", "kecamatan", "kota", "kodepos", "catatan"].forEach(function (n) { d[n] = f[n].value.trim(); });
+    ["nama", "wa", "alamat", "area", "kelurahan", "kecamatan", "kota", "kodepos", "catatan"].forEach(function (n) { d[n] = f[n].value.trim(); });
     var err = "";
-    if (!d.nama || !d.alamat || !d.kecamatan || !d.kota) err = "Mohon lengkapi semua kolom bertanda *.";
+    if (!d.nama || !d.alamat || !d.area) err = "Mohon lengkapi nama, WhatsApp, kelurahan/kecamatan, dan alamat.";
     else if (!/^628\d{7,11}$/.test(normPhone(d.wa))) err = "Nomor WhatsApp tidak valid. Contoh: 081234567890";
-    else if (!/^\d{5}$/.test(d.kodepos)) err = "Kode pos harus 5 angka.";
     else if (shipMode() === "instan" && !inst.pos) err = "Tandai lokasi pengiriman di peta untuk Kirim Instan.";
     else if (shipMode() === "instan" && inst.km > ID.maxKm) err = "Lokasi di luar jangkauan Kirim Instan. Silakan pilih JNE.";
     var box = $("#formError");
     if (err) { box.textContent = err; box.classList.remove("hidden"); return; }
     box.classList.add("hidden");
+    if ($("#rememberMe").checked) saveBuyer(d); else forgetBuyer();
     d.wa = normPhone(d.wa);
 
     lastWaUrl = "https://wa.me/" + C.waNumber + "?text=" + encodeURIComponent(buildMessage(d));
@@ -634,21 +675,120 @@
       try {
         window.fbq("init", C.metaPixelId, {
           ph: d.wa, fn: d.nama.split(/\s+/)[0].toLowerCase(),
-          ct: d.kota.toLowerCase().replace(/^(kota|kab\.?|kabupaten)\s+/, "").replace(/[^a-z]/g, ""),
-          zp: d.kodepos, country: "id"
+          ct: (d.kota || d.area).toLowerCase().replace(/^(kota|kab\.?|kabupaten)\s+/, "").replace(/[^a-z]/g, ""),
+          zp: d.kodepos || undefined, country: "id"
         });
       } catch (err) {}
     }
     var orderData = { content_ids: Object.keys(cart), contents: cartContents(), content_type: "product",
-      value: calc(d.kota + " " + d.kecamatan).total, currency: "IDR", num_items: cartCount() };
+      value: calc(areaText()).total, currency: "IDR", num_items: cartCount() };
     track("Lead", orderData);                 // event optimasi iklan: pesanan terkirim ke WA
     track("KirimPesananWA", orderData, true); // event kustom, untuk laporan
     window.open(lastWaUrl, "_blank");
 
     $("#retryWa").href = lastWaUrl;
-    cart = {}; saveCart(); renderCart(); f.reset();
-    if (ID) { inst.pos = null; inst.km = null; if (inst.marker) { inst.marker.remove(); inst.marker = null; } $("#instantBox").classList.add("hidden"); onShipModeChange(); }
+    cart = {}; saveCart(); renderCart(); f.reset(); setArea(null);
+    if (ID) { inst.pos = null; inst.km = null; inst.rates = null; inst.rate = null; renderRates(); if (inst.marker) { inst.marker.remove(); inst.marker = null; } $("#instantBox").classList.add("hidden"); onShipModeChange(); }
     showStep("#stepDone");
+  }
+
+  /* ---------- Kelurahan/kecamatan otomatis (data Kemendagri + kode pos) ---------- */
+  var WIL = null, wilLoading = false, areaHits = [], areaIdx = -1;
+  function areaText() {
+    var f = $("#stepCheckout"); if (!f) return "";
+    return f.kota.value ? f.kota.value + " " + f.kecamatan.value : f.area.value;
+  }
+  function loadWilayah(cb) {
+    if (WIL) return cb && cb();
+    if (wilLoading) return; wilLoading = true;
+    fetch("data/wilayah.json?v=1").then(function (r) { return r.json(); }).then(function (j) {
+      var rows = j.v.split("\n"), list = new Array(rows.length);
+      for (var i = 0; i < rows.length; i++) {
+        var a = rows[i].split("|"), d = j.d[+a[1]], r = j.r[d[1]];
+        list[i] = { kel: a[0], kec: d[0], kota: r[0], prov: j.p[r[1]], kp: a[2], key: (a[0] + " " + d[0] + " " + r[0] + " " + a[2]).toLowerCase() };
+      }
+      WIL = list; wilLoading = false; cb && cb();
+    }).catch(function () { wilLoading = false; });
+  }
+  function searchArea(q) {
+    var t = q.toLowerCase().replace(/[,.]/g, " ").split(/\s+/).filter(Boolean);
+    if (!t.length || !WIL) return [];
+    var hit = [], first = t[0];
+    for (var i = 0; i < WIL.length && hit.length < 400; i++) {
+      var w = WIL[i], ok = true;
+      for (var k = 0; k < t.length; k++) if (w.key.indexOf(t[k]) < 0) { ok = false; break; }
+      if (!ok) continue;
+      var kel = w.kel.toLowerCase(), kec = w.kec.toLowerCase();
+      w._s = (kel.indexOf(first) === 0 ? 0 : kec.indexOf(first) === 0 ? 1 : 2) + (FS && isFreeArea(w.kota) ? 0 : 0.5);
+      hit.push(w);
+    }
+    return hit.sort(function (a, b) { return a._s - b._s; }).slice(0, 8);
+  }
+  function renderAreaList() {
+    var ul = $("#areaList"), inp = $("#areaInput");
+    if (!areaHits.length) { ul.classList.add("hidden"); inp.setAttribute("aria-expanded", "false"); return; }
+    ul.innerHTML = areaHits.map(function (w, i) {
+      return '<li role="option" id="area-o' + i + '" data-area="' + i + '"' + (i === areaIdx ? ' aria-selected="true" class="on"' : "") + "><b>" + esc(w.kel) + ", " + esc(w.kec) + "</b><small>" + esc(w.kota) + ", " + esc(w.prov) + (w.kp ? " · " + w.kp : "") + "</small></li>";
+    }).join("");
+    ul.classList.remove("hidden"); inp.setAttribute("aria-expanded", "true");
+    if (areaIdx >= 0) inp.setAttribute("aria-activedescendant", "area-o" + areaIdx); else inp.removeAttribute("aria-activedescendant");
+  }
+  function setArea(w) {
+    var f = $("#stepCheckout");
+    f.kelurahan.value = w ? w.kel : ""; f.kecamatan.value = w ? w.kec : ""; f.kota.value = w ? w.kota : ""; f.kodepos.value = w ? w.kp : "";
+    if (w) f.area.value = w.kel + ", " + w.kec + ", " + w.kota;
+    var p = $("#areaPicked");
+    p.classList.toggle("hidden", !w);
+    if (w) p.textContent = "✔ " + w.kota + ", " + w.prov + (w.kp ? " · Kode pos " + w.kp : "");
+    areaHits = []; areaIdx = -1; renderAreaList(); updateShipStatus();
+  }
+  function initArea() {
+    var inp = $("#areaInput"), t;
+    inp.addEventListener("focus", function () { loadWilayah(); });
+    inp.addEventListener("input", function () {
+      setArea(null); clearTimeout(t);
+      t = setTimeout(function () { loadWilayah(function () { areaHits = searchArea(inp.value); areaIdx = -1; renderAreaList(); }); }, 120);
+      updateShipStatus();
+    });
+    inp.addEventListener("keydown", function (e) {
+      if (!areaHits.length) return;
+      if (e.key === "ArrowDown") { e.preventDefault(); areaIdx = (areaIdx + 1) % areaHits.length; renderAreaList(); }
+      else if (e.key === "ArrowUp") { e.preventDefault(); areaIdx = (areaIdx - 1 + areaHits.length) % areaHits.length; renderAreaList(); }
+      else if (e.key === "Enter") { e.preventDefault(); setArea(areaHits[Math.max(0, areaIdx)]); }
+      else if (e.key === "Escape") { e.stopPropagation(); areaHits = []; renderAreaList(); }
+    });
+    inp.addEventListener("blur", function () { setTimeout(function () { areaHits = []; renderAreaList(); }, 180); });
+    $("#areaList").addEventListener("mousedown", function (e) {
+      var li = e.target.closest("[data-area]"); if (!li) return;
+      e.preventDefault(); setArea(areaHits[Number(li.dataset.area)]); $("#stepCheckout").alamat.focus();
+    });
+  }
+
+  /* ---------- Ingat data pembeli (hanya di HP/browser pembeli) ---------- */
+  var BUYER_KEY = "nafis_pembeli_v1";
+  var BUYER_FIELDS = ["nama", "wa", "alamat", "area", "kelurahan", "kecamatan", "kota", "kodepos"];
+  function saveBuyer(d) {
+    try { var o = {}; BUYER_FIELDS.forEach(function (k) { o[k] = d[k] || ""; }); localStorage.setItem(BUYER_KEY, JSON.stringify(o)); } catch (e) {}
+  }
+  function forgetBuyer() { try { localStorage.removeItem(BUYER_KEY); } catch (e) {} }
+  function fillBuyer() {
+    var o = null; try { o = JSON.parse(localStorage.getItem(BUYER_KEY) || "null"); } catch (e) {}
+    var f = $("#stepCheckout"), box = $("#savedBuyer");
+    if (!o || !o.nama || f.nama.value) return;
+    BUYER_FIELDS.forEach(function (k) { if (f[k] && o[k]) f[k].value = o[k]; });
+    if (o.kota) { var p = $("#areaPicked"); p.classList.remove("hidden"); p.textContent = "✔ " + o.kota + (o.kodepos ? " · Kode pos " + o.kodepos : ""); }
+    box.innerHTML = "Data pengiriman terakhir sudah diisi. <button type=\"button\" id=\"clearBuyer\">Bukan Anda? Hapus</button>";
+    box.classList.remove("hidden");
+    $("#clearBuyer").addEventListener("click", function () {
+      forgetBuyer(); BUYER_FIELDS.forEach(function (k) { if (f[k]) f[k].value = ""; }); setArea(null); box.classList.add("hidden"); f.nama.focus();
+    });
+    updateShipStatus();
+  }
+  function goCheckout() {
+    showStep("#stepCheckout"); fillBuyer();
+    track("InitiateCheckout", { content_ids: Object.keys(cart), contents: cartContents(), content_type: "product", value: cartTotal(), currency: "IDR", num_items: cartCount() });
+    $("#stepCheckout").scrollTop = 0;
+    setTimeout(function () { var f = $("#stepCheckout"); if (!f.nama.value) f.nama.focus({ preventScroll: true }); }, 250);
   }
 
   /* ---------- Meta Pixel ---------- */
@@ -756,14 +896,16 @@
     $("#closeCart").addEventListener("click", closeDrawer);
     $("#overlay").addEventListener("click", closeDrawer);
     $("#doneClose").addEventListener("click", closeDrawer);
-    $("#toCheckout").addEventListener("click", function () {
-      showStep("#stepCheckout");
-      track("InitiateCheckout", { content_ids: Object.keys(cart), contents: cartContents(), content_type: "product", value: cartTotal(), currency: "IDR", num_items: cartCount() });
+    $("#toCheckout").addEventListener("click", goCheckout);
+    $("#pmBuy").addEventListener("click", function () {
+      var k = this.dataset.kode; if (!k) return;
+      if (!cart[k]) addToCart(k);
+      closeProduct(); $("#drawer").classList.add("open"); $("#overlay").classList.add("show"); $("#drawer").setAttribute("aria-hidden", "false");
+      goCheckout();
     });
     $("#backToCart").addEventListener("click", function () { showStep("#stepCart"); });
     $("#stepCheckout").addEventListener("submit", submitOrder);
-    $("#stepCheckout").kota.addEventListener("input", updateShipStatus);
-    $("#stepCheckout").kecamatan.addEventListener("input", updateShipStatus);
+    initArea();
     renderPromos();
     initInstant();
     document.addEventListener("keydown", function (e) {
